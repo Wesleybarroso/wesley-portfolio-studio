@@ -28,12 +28,12 @@ import {
 } from "framer-motion";
 import { useEffect, useState, type ReactNode } from "react";
 
-const portrait = "/manus-storage/wesley-portrait_5ae4b414.png";
-const mark = "/manus-storage/wb-signal-mark_97df5944.png";
-const heroAtmosphere = "/manus-storage/hero-atmosphere_591396cf.jpg";
-const systemsOrbit = "/manus-storage/systems-orbit_0bb2298d.jpg";
-const caseStudySurface = "/manus-storage/case-study-surface_104d55a1.jpg";
-const depthField = "/manus-storage/depth-field_b5b50906.jpg";
+const portrait = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/irQMWEfLLujrOPUg.png";
+const mark = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/JdZtjGQLUaaINXmZ.png";
+const heroAtmosphere = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/FIpEfEjoVTIeePhU.jpg";
+const systemsOrbit = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/myyUuXgYuGSDECZT.jpg";
+const caseStudySurface = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/POHjIfuBqiYavNxX.jpg";
+const depthField = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/EzvnheckxEFRDoEM.jpg";
 
 const navItems = [
   ["Início", "#inicio"],
