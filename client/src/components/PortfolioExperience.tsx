@@ -3,7 +3,6 @@
  * composição assimétrica e motion preciso para uma presença de engenharia premium.
  */
 import { Button } from "@/components/ui/button";
-import { trpc } from "@/lib/trpc";
 import {
   ArrowDown,
   ArrowUpRight,
@@ -51,6 +50,29 @@ type RevealProps = {
   className?: string;
   delay?: number;
 };
+
+type LiveProject = {
+  id: string;
+  name: string;
+  url: string;
+  updatedAt: number;
+};
+
+type ProjectsPayload = {
+  latest: LiveProject | null;
+  projects: LiveProject[];
+};
+
+async function requestLiveProjects(): Promise<ProjectsPayload> {
+  const response = await fetch("/api/projects", { headers: { Accept: "application/json" } });
+  const payload = (await response.json()) as ProjectsPayload & { error?: string };
+
+  if (!response.ok) {
+    throw new Error(payload.error ?? "Não foi possível atualizar os projetos.");
+  }
+
+  return payload;
+}
 
 function Reveal({ children, className = "", delay = 0 }: RevealProps) {
   const reduceMotion = useReducedMotion();
@@ -145,21 +167,15 @@ export default function PortfolioExperience() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("inicio");
   const [projectsOpen, setProjectsOpen] = useState(false);
+  const [latestProject, setLatestProject] = useState<LiveProject | null>(null);
+  const [projects, setProjects] = useState<LiveProject[]>([]);
+  const [latestLoading, setLatestLoading] = useState(true);
+  const [projectsLoading, setProjectsLoading] = useState(false);
+  const [projectsError, setProjectsError] = useState(false);
   const { scrollYProgress } = useScroll();
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.2 });
-  const latestProjectQuery = trpc.vercelProjects.latest.useQuery(undefined, {
-    retry: 1,
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-  });
-  const projectsQuery = trpc.vercelProjects.list.useQuery(undefined, {
-    enabled: false,
-    retry: 1,
-    staleTime: 0,
-  });
-  const latestProject = latestProjectQuery.data;
   const latestProjectName = latestProject?.name
-    ?? (latestProjectQuery.isFetching ? "Consultando Vercel" : "Aguardando projeto ativo");
+    ?? (latestLoading ? "Consultando Vercel" : "Aguardando projeto ativo");
 
   useEffect(() => {
     const sections = navItems
@@ -178,13 +194,41 @@ export default function PortfolioExperience() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    let isCurrent = true;
+
+    void requestLiveProjects()
+      .then((payload) => {
+        if (!isCurrent) return;
+        setLatestProject(payload.latest);
+      })
+      .catch(() => {
+        if (isCurrent) setProjectsError(true);
+      })
+      .finally(() => {
+        if (isCurrent) setLatestLoading(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
+
   function closeMenu() {
     setMenuOpen(false);
   }
 
   function openProjects() {
     setProjectsOpen(true);
-    void projectsQuery.refetch();
+    setProjectsLoading(true);
+    setProjectsError(false);
+    void requestLiveProjects()
+      .then((payload) => {
+        setLatestProject(payload.latest);
+        setProjects(payload.projects);
+      })
+      .catch(() => setProjectsError(true))
+      .finally(() => setProjectsLoading(false));
   }
 
   return (
@@ -329,11 +373,11 @@ export default function PortfolioExperience() {
             <div className="case-number">LATEST / 01</div>
             <div className="case-content">
               <div>
-                <p className="case-kicker">{latestProjectQuery.isFetching ? "ATUALIZANDO PROJETO" : "PROJETO MAIS RECENTE NO VERCEL"}</p>
+                <p className="case-kicker">{latestLoading ? "ATUALIZANDO PROJETO" : "PROJETO MAIS RECENTE NO VERCEL"}</p>
                 <h3>{latestProjectName}</h3>
               </div>
               <div className="case-details">
-                <p>{latestProjectQuery.error ? "A integração Vercel precisa ser concluída para exibir o projeto mais recente." : "Este card é atualizado pela sua conta Vercel e sempre mostra o último projeto com deployment ativo em produção."}</p>
+                <p>{projectsError ? "A integração Vercel precisa ser concluída para exibir o projeto mais recente." : "Este card é atualizado pela sua conta Vercel e sempre mostra o último projeto com deployment ativo em produção."}</p>
                 <ul className="case-tags" aria-label="Tecnologias do projeto">
                   <li>Vercel</li><li>Produção</li>{latestProject?.updatedAt ? <li>Atualizado recentemente</li> : null}
                 </ul>
@@ -365,11 +409,11 @@ export default function PortfolioExperience() {
                   <div><span>CATÁLOGO / VERCEL</span><h3>Projetos ativos</h3></div>
                   <button type="button" onClick={() => setProjectsOpen(false)} aria-label="Fechar lista de projetos"><X size={18} /></button>
                 </div>
-                {projectsQuery.isFetching && <p className="projects-status">Carregando os projetos ativos da sua conta Vercel.</p>}
-                {projectsQuery.error && <p className="projects-status">Não foi possível atualizar a lista agora. Tente novamente em alguns instantes.</p>}
-                {!projectsQuery.isFetching && !projectsQuery.error && projectsQuery.data?.length === 0 && <p className="projects-status">Nenhum projeto ativo foi encontrado nesta conta Vercel.</p>}
+                {projectsLoading && <p className="projects-status">Carregando os projetos ativos da sua conta Vercel.</p>}
+                {projectsError && <p className="projects-status">Não foi possível atualizar a lista agora. Tente novamente em alguns instantes.</p>}
+                {!projectsLoading && !projectsError && projects.length === 0 && <p className="projects-status">Nenhum projeto ativo foi encontrado nesta conta Vercel.</p>}
                 <div className="projects-grid">
-                  {projectsQuery.data?.map((project, index) => (
+                  {projects.map((project, index) => (
                     <a className="project-entry" href={project.url} target="_blank" rel="noreferrer" key={project.id}>
                       <span>0{index + 1} / PRODUÇÃO</span>
                       <strong>{project.name}</strong>

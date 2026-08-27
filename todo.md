@@ -9,9 +9,11 @@
 - [x] Desativar a autenticação Vercel aprovada para permitir acesso público ao deploy de produção.
 - [x] Corrigir as referências de imagem e de fundos para que a foto e a identidade visual aprovada carreguem no Vercel.
 - [x] Escolher a estratégia de atualização automática da vitrine de projetos Vercel.
-- [ ] Configurar no Vercel as credenciais de servidor necessárias para a sincronização em produção.
+- [x] Configurar no Vercel as credenciais de servidor necessárias para a sincronização em produção.
 - [ ] Publicar no GitHub a vitrine dinâmica já validada e confirmar o novo deploy no Vercel.
 - [ ] Confirmar em produção que o card antigo foi substituído pelo projeto mais recente da conta.
+- [x] Comparar integralmente a integração de projetos da Altixdev e adaptar qualquer componente ausente no portfólio.
+- [x] Substituir o adaptador tRPC não empacotado por uma função Vercel autocontida para a vitrine de projetos.
 - [x] Implementar o card do projeto mais recente e o carregamento dos demais projetos ativos.
 - [x] Replicar a lógica de atualização de projetos da Altixdev no portfólio com apenas um card em destaque.
 - [x] Adicionar, ao lado de “Visitar projeto”, um botão para carregar todos os projetos ativos da conta Vercel.

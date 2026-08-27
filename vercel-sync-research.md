@@ -21,3 +21,11 @@ A Altixdev protege o token do Vercel em uma função de servidor e mantém metad
 O Vercel disponibiliza o endpoint `POST /v10/projects/{idOrName}/env` para criar variáveis de ambiente no projeto, usando autenticação Bearer. O token de acesso deve ser cadastrado como variável do tipo `sensitive`, com os alvos `production` e `preview`, para que seu valor não possa ser consultado depois da criação. A API de deployments aceita `target=production`, `state=READY` e o parâmetro `slug` da equipe, permitindo que o servidor retorne somente um deployment ativo por projeto, em ordem de atualização.
 
 Fontes: https://vercel.com/docs/rest-api/projects/create-one-or-more-environment-variables ; https://vercel.com/docs/rest-api/deployments/list-deployments ; https://vercel.com/docs/environment-variables/sensitive-environment-variables
+
+## Comparação com a Altixdev
+
+A Altixdev usa três componentes adicionais: uma tabela `portfolio_projects` para registrar explicitamente quais projetos podem aparecer, uma tabela `site_config` para guardar a credencial do Vercel e a função `portfolio-projects`, que consulta o deployment de produção mais recente de cada item cadastrado. Portanto, a Altixdev não descobre automaticamente todos os projetos da conta: ela mostra o catálogo manualmente escolhido e usa o Vercel apenas para confirmar o estado e a data de cada um.
+
+O portfólio implementado usa uma rota pública tRPC com a mesma proteção de credencial no servidor, porém consulta a API global de deployments do Vercel com `target=production` e `state=READY`. Isso retorna automaticamente um item por projeto ativo, ordenado pelo deployment mais recente, o que atende ao requisito de não precisar cadastrar cada novo projeto. A interface exibe o item mais recente no card e somente carrega a grade completa quando o visitante escolhe `Ver meus projetos`.
+
+Foi identificado um token Vercel salvo em histórico de migração da Altixdev. Ele não será reutilizado no portfólio. Como boa prática de segurança, esse token deve ser revogado e substituído por uma variável sensível de ambiente fora do repositório.

@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
+import { listActiveVercelProjects } from "../vercelProjects";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
@@ -36,6 +37,16 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+  app.get("/api/projects", async (_req, res) => {
+    try {
+      const projects = await listActiveVercelProjects();
+      res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+      res.status(200).json({ latest: projects[0] ?? null, projects });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Não foi possível consultar os projetos Vercel.";
+      res.status(502).json({ error: message, latest: null, projects: [] });
+    }
+  });
   // tRPC API
   app.use(
     "/api/trpc",
