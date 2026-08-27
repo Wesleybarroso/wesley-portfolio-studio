@@ -49,6 +49,7 @@ import {
   technologyLabels,
   type ProjectTechnology,
 } from "@/lib/projectCatalogMeta";
+import { getPreviewLoadingStrategy, type PreviewVariant } from "@/lib/previewLoading";
 
 const portrait = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/irQMWEfLLujrOPUg.png";
 const mark = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/JdZtjGQLUaaINXmZ.png";
@@ -224,7 +225,7 @@ function ProjectLivePreview({
   forceFallback = false,
 }: {
   project: LiveProject;
-  variant: "featured" | "catalog";
+  variant: PreviewVariant;
   forceFallback?: boolean;
 }) {
   const [previewState, setPreviewState] = useState<"loading" | "ready" | "fallback">("loading");
@@ -260,7 +261,7 @@ function ProjectLivePreview({
           src={addPortfolioPreviewParameter(project.previewUrl ?? project.url)}
           title={`Prévia do projeto ${project.name}`}
           tabIndex={-1}
-          loading="lazy"
+          loading={getPreviewLoadingStrategy(variant)}
           onLoad={() => setPreviewState("ready")}
           onError={() => setPreviewState("fallback")}
         />

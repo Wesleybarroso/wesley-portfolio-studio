@@ -25,19 +25,25 @@
 - [x] Implementar estados reais de carregamento, sucesso e indisponibilidade para a prévia incorporada.
 - [x] Validar em produção a ativação manual do fallback e os controles do card.
 - [x] Exibir uma miniatura real do deployment mais recente em cada projeto do catálogo ativo.
-- [ ] Sincronizar as miniaturas com o deployment de produção mais recente de cada projeto Vercel.
-- [ ] Validar em produção o carregamento, o fallback e os links de cada card do catálogo.
+- [x] Sincronizar as miniaturas com o deployment de produção mais recente de cada projeto Vercel.
+- [x] Validar em produção o carregamento, o fallback e os links de cada card do catálogo.
 - [x] Priorizar o link público estável de cada projeto em vez da URL temporária de deployment protegida.
 - [x] Validar a prévia da Altixdev usando o domínio público `altixdev-chi.vercel.app`.
-- [ ] Ocultar a barra de rolagem visível mantendo a rolagem normal por mouse, toque e teclado.
-- [ ] Vincular cada URL de prévia ao alias associado ao deployment de produção mais recente.
+- [x] Ocultar a barra de rolagem visível mantendo a rolagem normal por mouse, toque e teclado.
+- [x] Vincular cada URL de prévia ao alias associado ao deployment de produção mais recente.
 - [ ] Validar individualmente os estados de prévia, fallback e destino dos cinco cards publicados.
 - [ ] Atualizar os repositórios Altixdev, portfólio antigo e Verde Ação para remover barras de rolagem internas indesejadas.
 - [ ] Redesenhar o Verde Ação com layout responsivo, aviso de cookies, rolagem suave, parallax e efeitos de profundidade funcionais.
-- [ ] Exibir o nome e os símbolos das tecnologias de cada projeto abaixo da prévia ao vivo.
-- [ ] Revelar uma descrição breve do projeto ao passar o mouse ou usar foco de teclado no card.
+- [x] Exibir o nome e os símbolos das tecnologias de cada projeto abaixo da prévia ao vivo.
+- [x] Revelar uma descrição breve do projeto ao passar o mouse ou usar foco de teclado no card.
 - [ ] Validar a leitura das tecnologias, a interação dos cards e a responsividade no catálogo publicado.
-- [ ] Reposicionar o título do projeto em destaque acima da descrição, na coluna de leitura do card principal.
-- [ ] Ampliar e ajustar a tipografia responsiva da navegação lateral e dos textos de apoio do portfólio.
-- [ ] Adicionar aviso de cookies profissional com opções de aceitar, recusar e salvar preferências no navegador.
+- [x] Reposicionar o título do projeto em destaque acima da descrição, na coluna de leitura do card principal.
+- [x] Ampliar e ajustar a tipografia responsiva da navegação lateral e dos textos de apoio do portfólio.
+- [x] Adicionar aviso de cookies profissional com opções de aceitar, recusar e salvar preferências no navegador.
 - [ ] Validar a legibilidade em desktop e mobile e os fluxos de consentimento de cookies publicados.
+- [x] Corrigir no repositório Altixdev a atualização automática de projetos e prévias após novos deployments publicados.
+- [ ] Validar no site Altixdev o carregamento da imagem do projeto mais recente a partir do link público correto.
+- [ ] Validar em produção, card por card, os destinos e os estados reais de prévia ou fallback do catálogo atual, incluindo a contagem correta de projetos retornados.
+- [ ] Validar o catálogo enriquecido na versão publicada em viewport mobile, confirmando leitura das tecnologias, descrição por foco e ausência de quebra visual.
+- [ ] Validar na versão publicada os fluxos completos de cookies: aceitar, somente essenciais e salvar preferências com persistência após recarregar.
+- [ ] Corrigir o carregamento das prévias do catálogo em mobile para evitar fallback prematuro quando os cards ainda estão fora da área visível.

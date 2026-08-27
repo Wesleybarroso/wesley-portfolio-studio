@@ -69,3 +69,13 @@ Após adicionar metadados de tecnologias e descrições, a prévia local voltou 
 Após reposicionar o título do projeto principal, a revisão visual local confirmou que ele deixou a sobreposição com a prévia e passou a ser lido na coluna direita, acima da descrição, dos chips de status e dos controles.
 
 Em desktop, a navegação lateral foi ampliada com numeração e rótulos mais contrastados. Em mobile, o aviso de cookies adaptou-se em largura total, mantendo os três controles legíveis. O fluxo de aceite foi testado: a preferência foi salva no armazenamento local e o aviso foi fechado.
+
+Na publicação `wesley-portfolio-studio-cy4sqiq2a`, o título do projeto em destaque foi confirmado na coluna de leitura, acima da descrição e dos controles. A navegação lateral ampliada e o aviso de cookies com as opções `Preferências`, `Somente essenciais` e `Aceitar todos` também apareceram corretamente na versão de produção.
+
+O catálogo publicado foi aberto com seis cards: `altixdev`, `altixdev-funnel`, `wesley-portfolio-studio`, `portifolio`, `espacoglamour` e `projetoverdeacao`. Cada card exibiu sua prévia ao vivo, o título legível e os símbolos de tecnologias identificadas a partir dos repositórios correspondentes; o aviso de cookies permaneceu acessível sem encobrir os controles do catálogo.
+
+## Validação publicada complementar — 27 de agosto de 2026
+
+O parâmetro de validação de fallback abriu o catálogo com os seis projetos ativos no estado alternativo. Em todos os cards, o conteúdo de fallback permaneceu legível e o link principal apontou para uma URL pública estável: `altixdev-chi.vercel.app`, `altixdev-funnel.vercel.app`, `wesley-portfolio-studio.vercel.app`, `portifolio-lovat-tau-35.vercel.app`, `espacoglamour.vercel.app` e `projetoverdeacao.vercel.app`. Isso confirmou que uma prévia indisponível não interrompe o acesso ao projeto publicado.
+
+Os três fluxos de consentimento foram testados na publicação. `Aceitar todos` fechou o aviso e persistiu `analytics: true`; `Somente essenciais` fechou o aviso e persistiu `analytics: false`; e o painel `Preferências` permitiu salvar a opção de medição desligada, mantendo o aviso fechado depois de recarregar a página. Em todos os casos a preferência manteve `essential: true`.
