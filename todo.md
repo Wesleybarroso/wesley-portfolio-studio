@@ -32,8 +32,8 @@
 - [x] Ocultar a barra de rolagem visível mantendo a rolagem normal por mouse, toque e teclado.
 - [x] Vincular cada URL de prévia ao alias associado ao deployment de produção mais recente.
 - [x] Validar individualmente os estados de prévia, fallback e destino dos cards ativos publicados.
-- [ ] Atualizar os repositórios Altixdev, portfólio antigo e Verde Ação para remover barras de rolagem internas indesejadas.
-- [ ] Redesenhar o Verde Ação com layout responsivo, aviso de cookies, rolagem suave, parallax e efeitos de profundidade funcionais.
+- [x] Atualizar os repositórios Altixdev, portfólio antigo e Verde Ação para remover barras de rolagem internas indesejadas.
+- [x] Redesenhar o Verde Ação com layout responsivo, aviso de cookies, rolagem suave, parallax e efeitos de profundidade funcionais.
 - [x] Exibir o nome e os símbolos das tecnologias de cada projeto abaixo da prévia ao vivo.
 - [x] Revelar uma descrição breve do projeto ao passar o mouse ou usar foco de teclado no card.
 - [x] Validar a leitura das tecnologias, a interação dos cards e a responsividade no catálogo publicado.
@@ -42,7 +42,9 @@
 - [x] Adicionar aviso de cookies profissional com opções de aceitar, recusar e salvar preferências no navegador.
 - [x] Validar a legibilidade em desktop e mobile e os fluxos de consentimento de cookies publicados.
 - [x] Corrigir no repositório Altixdev a atualização automática de projetos e prévias após novos deployments publicados.
-- [ ] Validar no site Altixdev o carregamento da imagem do projeto mais recente a partir do link público correto.
+- [x] Adiar qualquer alteração ou validação do domínio personalizado altixdev.com.br, preservando a hospedagem atual para ajuste posterior pelo usuário.
+- [x] Validar no alias Vercel altixdev-chi.vercel.app o carregamento de cards e prévias a partir de links públicos corretos.
+- [x] Confirmar os deployments Vercel atualizados dos projetos modificados sem alterar domínios personalizados.
 - [x] Validar em produção, card por card, os destinos e os estados reais de prévia ou fallback do catálogo atual, incluindo a contagem correta de projetos retornados.
 - [x] Validar o catálogo enriquecido na versão publicada em viewport mobile, confirmando leitura das tecnologias, descrição por foco e ausência de quebra visual.
 - [x] Validar na versão publicada os fluxos completos de cookies: aceitar, somente essenciais e salvar preferências com persistência após recarregar.
@@ -60,3 +62,5 @@
 - [x] Validar em viewport mobile a troca de idioma por teclado e sua persistência após recarregar.
 - [x] Traduzir o CTA visual “EXPLORE” nos idiomas disponibilizados e revalidar os modos PT-BR e EN em produção.
 - [x] Localizar os metadados de documento além do título, incluindo description e Open Graph quando presentes, e validar o resultado publicado.
+- [x] Validar no código e no deployment do Verde Ação os efeitos de parallax e profundidade durante a rolagem, incluindo a preferência por reduzir movimento.
+- [x] Confirmar em desktop e mobile que os efeitos de movimento do Verde Ação atualizam posições no scroll sem criar transbordamento visual.
