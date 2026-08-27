@@ -3,6 +3,7 @@
  * composição assimétrica e motion preciso para uma presença de engenharia premium.
  */
 import { Button } from "@/components/ui/button";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 import {
   ArrowDown,
   ArrowUpRight,
@@ -28,7 +29,26 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import type { IconType } from "react-icons";
+import {
+  SiCss,
+  SiFramer,
+  SiHtml5,
+  SiJavascript,
+  SiNextdotjs,
+  SiReact,
+  SiSass,
+  SiTailwindcss,
+  SiTypescript,
+  SiVercel,
+  SiVite,
+} from "react-icons/si";
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import {
+  getProjectCatalogMeta,
+  technologyLabels,
+  type ProjectTechnology,
+} from "@/lib/projectCatalogMeta";
 
 const portrait = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/irQMWEfLLujrOPUg.png";
 const mark = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/JdZtjGQLUaaINXmZ.png";
@@ -66,6 +86,32 @@ type ProjectsPayload = {
   latest: LiveProject | null;
   projects: LiveProject[];
 };
+
+const technologyIcons: Record<ProjectTechnology, IconType> = {
+  react: SiReact,
+  typescript: SiTypescript,
+  vite: SiVite,
+  tailwind: SiTailwindcss,
+  javascript: SiJavascript,
+  framer: SiFramer,
+  next: SiNextdotjs,
+  html: SiHtml5,
+  css: SiCss,
+  sass: SiSass,
+  vercel: SiVercel,
+};
+
+function ProjectTechnologyIcons({ technologies }: { technologies: ProjectTechnology[] }) {
+  return (
+    <ul className="project-tech-list" aria-label="Tecnologias utilizadas">
+      {technologies.map((technology) => {
+        const Icon = technologyIcons[technology];
+        const label = technologyLabels[technology];
+        return <li key={technology} title={label} aria-label={label}><Icon aria-hidden="true" /><span className="sr-only">{label}</span></li>;
+      })}
+    </ul>
+  );
+}
 
 async function requestLiveProjects(): Promise<ProjectsPayload> {
   const response = await fetch("/api/projects", { headers: { Accept: "application/json" } });
@@ -454,9 +500,9 @@ export default function PortfolioExperience() {
             <div className="case-content">
               <div>
                 <p className="case-kicker">{latestLoading ? "ATUALIZANDO PROJETO" : "PROJETO MAIS RECENTE NO VERCEL"}</p>
-                <h3>{latestProjectName}</h3>
               </div>
               <div className="case-details">
+                <h3 className="case-title--reading">{latestProjectName}</h3>
                 <p>{projectsError ? "A integração Vercel precisa ser concluída para exibir o projeto mais recente." : "Este card é atualizado pela sua conta Vercel e sempre mostra o último projeto com deployment ativo em produção."}</p>
                 <ul className="case-tags" aria-label="Tecnologias do projeto">
                   <li>Vercel</li><li>Produção</li>{latestProject?.updatedAt ? <li>Atualizado recentemente</li> : null}
@@ -493,14 +539,22 @@ export default function PortfolioExperience() {
                 {projectsError && <p className="projects-status">Não foi possível atualizar a lista agora. Tente novamente em alguns instantes.</p>}
                 {!projectsLoading && !projectsError && projects.length === 0 && <p className="projects-status">Nenhum projeto ativo foi encontrado nesta conta Vercel.</p>}
                 <div className="projects-grid">
-                  {projects.map((project, index) => (
-                    <a className="project-entry" href={project.previewUrl ?? project.url} target="_blank" rel="noreferrer" key={project.id}>
-                      <ProjectLivePreview project={project} variant="catalog" forceFallback={forcePreviewFallback} />
-                      <span>0{index + 1} / PRODUÇÃO</span>
-                      <strong>{project.name}</strong>
-                      <ArrowUpRight size={18} />
-                    </a>
-                  ))}
+                  {projects.map((project) => {
+                    const projectMeta = getProjectCatalogMeta(project.name);
+                    return (
+                      <a className="project-entry" href={project.previewUrl ?? project.url} target="_blank" rel="noreferrer" key={project.id}>
+                        <div className="project-entry__visual">
+                          <ProjectLivePreview project={project} variant="catalog" forceFallback={forcePreviewFallback} />
+                        </div>
+                        <div className="project-entry__content">
+                          <strong>{projectMeta.title}</strong>
+                          <ProjectTechnologyIcons technologies={projectMeta.technologies} />
+                        </div>
+                        <p className="project-entry__description">{projectMeta.description}</p>
+                        <ArrowUpRight size={18} aria-hidden="true" />
+                      </a>
+                    );
+                  })}
                 </div>
               </motion.div>
             )}
@@ -548,6 +602,7 @@ export default function PortfolioExperience() {
           <a href="#inicio" onClick={(event) => navigateToSection(event, "#inicio")} className="back-to-top">VOLTAR AO TOPO <ArrowUpRight size={15} /></a>
         </footer>
       </main>
+      <CookieConsentBanner />
     </div>
   );
 }

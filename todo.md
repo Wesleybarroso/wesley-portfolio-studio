@@ -32,3 +32,12 @@
 - [ ] Ocultar a barra de rolagem visível mantendo a rolagem normal por mouse, toque e teclado.
 - [ ] Vincular cada URL de prévia ao alias associado ao deployment de produção mais recente.
 - [ ] Validar individualmente os estados de prévia, fallback e destino dos cinco cards publicados.
+- [ ] Atualizar os repositórios Altixdev, portfólio antigo e Verde Ação para remover barras de rolagem internas indesejadas.
+- [ ] Redesenhar o Verde Ação com layout responsivo, aviso de cookies, rolagem suave, parallax e efeitos de profundidade funcionais.
+- [ ] Exibir o nome e os símbolos das tecnologias de cada projeto abaixo da prévia ao vivo.
+- [ ] Revelar uma descrição breve do projeto ao passar o mouse ou usar foco de teclado no card.
+- [ ] Validar a leitura das tecnologias, a interação dos cards e a responsividade no catálogo publicado.
+- [ ] Reposicionar o título do projeto em destaque acima da descrição, na coluna de leitura do card principal.
+- [ ] Ampliar e ajustar a tipografia responsiva da navegação lateral e dos textos de apoio do portfólio.
+- [ ] Adicionar aviso de cookies profissional com opções de aceitar, recusar e salvar preferências no navegador.
+- [ ] Validar a legibilidade em desktop e mobile e os fluxos de consentimento de cookies publicados.

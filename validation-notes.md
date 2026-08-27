@@ -61,3 +61,11 @@ No teste visual em produção, a página carregou sem a faixa de rolagem lateral
 Na validação final do catálogo publicado, os cinco cards abriram com URLs públicas estáveis. A Altixdev carregou pela prévia de `altixdev-chi.vercel.app`, mostrando seu design real no próprio card; o portfólio e os demais projetos também exibiram seus conteúdos publicados. Os links dos cards passaram a direcionar para essas mesmas URLs públicas, sem depender dos domínios temporários de deployment que exigem autenticação.
 
 O fallback foi acionado manualmente na publicação pelo parâmetro de validação e apresentou uma composição legível de `LINK DIRETO`, título do projeto e orientação de visita. Nessa condição, o botão `Ver meus projetos` continuou exposto e recebeu o clique, comprovando que a camada de preview não bloqueia os controles.
+
+Na versão publicada `wesley-portfolio-studio-dnk26m41a`, a resposta do endpoint confirmou o `deploymentId` mais recente de cada projeto e selecionou a respectiva URL pública de prévia. Para a Altixdev, o deployment atual foi associado a `altixdev-chi.vercel.app`; as demais prévias também retornaram aliases públicos estáveis.
+
+Após adicionar metadados de tecnologias e descrições, a prévia local voltou a renderizar normalmente depois da otimização do novo pacote de ícones. O catálogo foi acionado e segue em conferência visual antes da publicação.
+
+Após reposicionar o título do projeto principal, a revisão visual local confirmou que ele deixou a sobreposição com a prévia e passou a ser lido na coluna direita, acima da descrição, dos chips de status e dos controles.
+
+Em desktop, a navegação lateral foi ampliada com numeração e rótulos mais contrastados. Em mobile, o aviso de cookies adaptou-se em largura total, mantendo os três controles legíveis. O fluxo de aceite foi testado: a preferência foi salva no armazenamento local e o aviso foi fechado.
