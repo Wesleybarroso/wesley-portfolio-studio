@@ -49,3 +49,8 @@
 - [x] Corrigir o carregamento das prévias do catálogo em mobile para evitar fallback prematuro quando os cards ainda estão fora da área visível.
 - [x] Revalidar visualmente em produção o catálogo mobile com cards enquadrados, confirmando títulos, ícones e ausência de quebra visual.
 - [x] Revalidar visualmente em produção a legibilidade dos textos principais e do catálogo no viewport mobile antes de encerrar a validação.
+- [ ] Corrigir o nome editorial exibido para o projeto `portifolio` como “Portfólio Wesley”, inclusive quando ele for o card mais recente.
+- [ ] Validar em produção o nome corrigido no card de projeto mais recente e no catálogo dinâmico.
+- [ ] Adicionar um seletor acessível de idioma com Português (Brasil), English, Français, Italiano, Español, Deutsch, Русский, Dansk e Norsk.
+- [ ] Traduzir todos os textos visíveis do portfólio para os idiomas disponibilizados, sem alterar URLs, links de contato ou nomes próprios.
+- [ ] Persistir a preferência de idioma no navegador e validar a troca por mouse e teclado em desktop e mobile.

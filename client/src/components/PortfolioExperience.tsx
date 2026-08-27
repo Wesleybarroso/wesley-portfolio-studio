@@ -8,9 +8,11 @@ import {
   ArrowDown,
   ArrowUpRight,
   Boxes,
+  Check,
   Code2,
   Database,
   FolderOpen,
+  Globe2,
   Github,
   Layers3,
   Linkedin,
@@ -50,6 +52,14 @@ import {
   type ProjectTechnology,
 } from "@/lib/projectCatalogMeta";
 import { getPreviewLoadingStrategy, type PreviewVariant } from "@/lib/previewLoading";
+import {
+  getPortfolioCopy,
+  isLocaleCode,
+  LOCALE_STORAGE_KEY,
+  supportedLocales,
+  type LocaleCode,
+  type PortfolioCopy,
+} from "@/lib/siteLocale";
 
 const portrait = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/irQMWEfLLujrOPUg.png";
 const mark = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/JdZtjGQLUaaINXmZ.png";
@@ -219,13 +229,70 @@ function addPortfolioPreviewParameter(projectUrl: string) {
   return `${projectUrl}${separator}portfolio-preview=1`;
 }
 
+function LanguageSelector({
+  locale,
+  copy,
+  onChange,
+}: {
+  locale: LocaleCode;
+  copy: PortfolioCopy;
+  onChange: (locale: LocaleCode) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedLocale = supportedLocales.find((item) => item.code === locale) ?? supportedLocales[0];
+
+  function selectLocale(nextLocale: LocaleCode) {
+    onChange(nextLocale);
+    setOpen(false);
+  }
+
+  return (
+    <div className="language-selector">
+      <button
+        type="button"
+        className="language-selector__trigger"
+        aria-label={copy.languageMenuLabel}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        onClick={() => setOpen((isOpen) => !isOpen)}
+      >
+        <Globe2 size={16} aria-hidden="true" />
+        <span>{selectedLocale.shortLabel}</span>
+      </button>
+      {open && (
+        <div className="language-selector__menu" role="listbox" aria-label={copy.languageMenuLabel}>
+          {supportedLocales.map((item) => (
+            <button
+              key={item.code}
+              type="button"
+              role="option"
+              aria-selected={locale === item.code}
+              className={locale === item.code ? "is-selected" : ""}
+              onClick={() => selectLocale(item.code)}
+            >
+              <span>{item.label}</span>
+              {locale === item.code && <Check size={15} aria-hidden="true" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function getLocalizedProjectDescription(projectName: string, copy: PortfolioCopy) {
+  return copy.projects.descriptions[projectName.toLowerCase()] ?? copy.projects.defaultDescription;
+}
+
 function ProjectLivePreview({
   project,
   variant,
+  copy,
   forceFallback = false,
 }: {
   project: LiveProject;
   variant: PreviewVariant;
+  copy: PortfolioCopy;
   forceFallback?: boolean;
 }) {
   const [previewState, setPreviewState] = useState<"loading" | "ready" | "fallback">("loading");
@@ -252,9 +319,9 @@ function ProjectLivePreview({
   return (
     <div className={className} data-state={previewState} aria-hidden="true">
       <div className={fallbackClassName}>
-        <span>{previewState === "loading" ? "CARREGANDO PRÉVIA" : "PRÉVIA INDISPONÍVEL"}</span>
-        <strong>{project.name}</strong>
-        <small>{previewState === "loading" ? "Preparando a visualização ao vivo." : "Use “Visitar projeto” para abrir a versão publicada."}</small>
+        <span>{previewState === "loading" ? copy.projects.previewLoading : copy.projects.previewUnavailable}</span>
+        <strong>{getProjectCatalogMeta(project.name).title}</strong>
+        <small>{previewState === "loading" ? copy.projects.previewLoadingDetail : copy.projects.previewUnavailableDetail}</small>
       </div>
       {shouldRenderPreview && (
         <iframe
@@ -267,7 +334,7 @@ function ProjectLivePreview({
         />
       )}
       <span className={labelClassName}>
-        {previewState === "ready" ? "LIVE / PREVIEW" : previewState === "loading" ? "CARREGANDO" : "LINK DIRETO"}
+        {previewState === "ready" ? "LIVE / PREVIEW" : previewState === "loading" ? copy.projects.previewLoading : copy.projects.directLink}
       </span>
     </div>
   );
@@ -275,6 +342,10 @@ function ProjectLivePreview({
 
 export default function PortfolioExperience() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [locale, setLocale] = useState<LocaleCode>(() => {
+    const storedLocale = window.localStorage.getItem(LOCALE_STORAGE_KEY);
+    return isLocaleCode(storedLocale) ? storedLocale : "pt-BR";
+  });
   const [activeSection, setActiveSection] = useState("inicio");
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [latestProject, setLatestProject] = useState<LiveProject | null>(null);
@@ -284,8 +355,10 @@ export default function PortfolioExperience() {
   const [projectsError, setProjectsError] = useState(false);
   const { scrollYProgress } = useScroll();
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.2 });
-  const latestProjectName = latestProject?.name
-    ?? (latestLoading ? "Consultando Vercel" : "Aguardando projeto ativo");
+  const copy = getPortfolioCopy(locale);
+  const latestProjectName = latestProject
+    ? getProjectCatalogMeta(latestProject.name).title
+    : (latestLoading ? copy.projects.loading : copy.projects.noProject);
   const isEmbeddedPreview = new URLSearchParams(window.location.search).has("portfolio-preview");
   const forcePreviewFallback = new URLSearchParams(window.location.search).has("preview-fallback");
 
@@ -295,6 +368,10 @@ export default function PortfolioExperience() {
     }
     window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "instant" }));
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   useEffect(() => {
     const sections = navItems
@@ -337,6 +414,11 @@ export default function PortfolioExperience() {
     setMenuOpen(false);
   }
 
+  function changeLocale(nextLocale: LocaleCode) {
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale);
+    setLocale(nextLocale);
+  }
+
   function navigateToSection(event: MouseEvent<HTMLAnchorElement>, hash: string) {
     event.preventDefault();
     document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -361,37 +443,40 @@ export default function PortfolioExperience() {
     <div className="portfolio-shell">
       <motion.div className="scroll-progress" style={{ scaleX: progressScale }} />
 
-      <aside className="command-rail" aria-label="Navegação principal">
-        <a href="#inicio" className="brand-lockup" aria-label="Ir para o início" onClick={(event) => navigateToSection(event, "#inicio")}>
+      <aside className="command-rail" aria-label={copy.navigation.join(", ")}>
+        <a href="#inicio" className="brand-lockup" aria-label={copy.navigation[0]} onClick={(event) => navigateToSection(event, "#inicio")}>
           <img src={mark} alt="Símbolo WB" className="brand-mark" />
           <span>WESLEY<br />BARROSO</span>
           <b className="brand-code">WB/</b>
         </a>
 
         <nav className="rail-nav">
-          {navItems.map(([label, href], index) => (
+          {navItems.map(([, href], index) => (
             <a href={href} key={href} onClick={(event) => navigateToSection(event, href)} className={`rail-link ${activeSection === href.slice(1) ? "is-active" : ""}`}>
-              <small>0{index + 1}</small><span>{label}</span>
+              <small>0{index + 1}</small><span>{copy.navigation[index]}</span>
             </a>
           ))}
         </nav>
 
+        <LanguageSelector locale={locale} copy={copy} onChange={changeLocale} />
+
         <div className="rail-footer">
           <span className="availability-dot" />
-          <p>Aberto a projetos<br />e parcerias.</p>
+          <p>{copy.availability[0]}<br />{copy.availability[1]}</p>
         </div>
       </aside>
 
       <header className="mobile-command-bar">
-        <a href="#inicio" className="brand-lockup" aria-label="Ir para o início" onClick={(event) => navigateToSection(event, "#inicio")}>
+        <a href="#inicio" className="brand-lockup" aria-label={copy.navigation[0]} onClick={(event) => navigateToSection(event, "#inicio")}>
           <img src={mark} alt="Símbolo WB" className="brand-mark" />
           <span>WESLEY<br />BARROSO</span>
           <b className="brand-code">WB/</b>
         </a>
+        <LanguageSelector locale={locale} copy={copy} onChange={changeLocale} />
         <button
           className="menu-toggle"
           type="button"
-          aria-label={menuOpen ? "Fechar navegação" : "Abrir navegação"}
+          aria-label="Menu"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
         >
@@ -399,9 +484,9 @@ export default function PortfolioExperience() {
         </button>
         {menuOpen && (
           <nav className="mobile-menu">
-            {navItems.map(([label, href], index) => (
+            {navItems.map(([, href], index) => (
               <a href={href} key={href} onClick={(event) => { navigateToSection(event, href); closeMenu(); }} className={activeSection === href.slice(1) ? "is-active" : ""}>
-                <small>0{index + 1}</small>{label}
+                <small>0{index + 1}</small>{copy.navigation[index]}
               </a>
             ))}
           </nav>
@@ -415,21 +500,21 @@ export default function PortfolioExperience() {
           <div className="hero-layout">
             <Reveal className="hero-copy">
               <div className="hero-brand-stamp"><img src={mark} alt="" /><span>WESLEY.BARROSO<br /><small>ENGINEERING SYSTEMS</small></span></div>
-              <div className="eyebrow"><span className="signal-dot" /> ENGENHEIRO DE SOFTWARE / FULL STACK</div>
-              <h1>Da operação complexa<br />a <em>sistemas claros.</em></h1>
-              <p className="hero-intro">Sou <strong>Wesley Barroso</strong>. Projeto aplicações, integrações e automações que dão escala ao que realmente move o seu negócio.</p>
+              <div className="eyebrow"><span className="signal-dot" /> {copy.eyebrow}</div>
+              <h1>{copy.heroTitle[0]}<br />{copy.heroTitle[1].startsWith("a ") ? "a " : ""}<em>{copy.heroTitle[1].replace(/^a\s/, "")}</em></h1>
+              <p className="hero-intro">{copy.heroIntro}</p>
               <div className="hero-actions">
                 <Button asChild className="signal-button">
-                  <a href="#projeto" onClick={(event) => navigateToSection(event, "#projeto")}>Ver trabalho selecionado <ArrowDown size={16} /></a>
+                  <a href="#projeto" onClick={(event) => navigateToSection(event, "#projeto")}>{copy.heroActions[0]} <ArrowDown size={16} /></a>
                 </Button>
                 <Button asChild variant="outline" className="quiet-button">
-                  <a href="#contato" onClick={(event) => navigateToSection(event, "#contato")}>Iniciar uma conversa <ArrowUpRight size={16} /></a>
+                  <a href="#contato" onClick={(event) => navigateToSection(event, "#contato")}>{copy.heroActions[1]} <ArrowUpRight size={16} /></a>
                 </Button>
               </div>
-              <div className="hero-metrics" aria-label="Especialidades">
-                <div><strong>01</strong><span>Produtos digitais</span></div>
-                <div><strong>02</strong><span>Automações úteis</span></div>
-                <div><strong>03</strong><span>Arquitetura escalável</span></div>
+              <div className="hero-metrics" aria-label={copy.eyebrow}>
+                <div><strong>01</strong><span>{copy.metrics[0]}</span></div>
+                <div><strong>02</strong><span>{copy.metrics[1]}</span></div>
+                <div><strong>03</strong><span>{copy.metrics[2]}</span></div>
               </div>
             </Reveal>
 
@@ -437,39 +522,39 @@ export default function PortfolioExperience() {
               <PortraitPortal />
             </Reveal>
           </div>
-          <a href="#visao" onClick={(event) => navigateToSection(event, "#visao")} className="scroll-cue" aria-label="Explorar a próxima seção"><span>EXPLORE</span><ArrowDown size={16} /></a>
+          <a href="#visao" onClick={(event) => navigateToSection(event, "#visao")} className="scroll-cue" aria-label={copy.explore}><span>{copy.explore}</span><ArrowDown size={16} /></a>
         </section>
 
         <section id="visao" className="section section--vision" data-code="SYSTEM / 01">
           <Reveal className="section-heading">
-            <p className="section-index">01 / VISÃO DE ENTREGA</p>
-            <h2>Engenharia que se<br /><em>enxerga no resultado.</em></h2>
+            <p className="section-index">{copy.vision.index}</p>
+            <h2>{copy.vision.title[0]}<br /><em>{copy.vision.title[1]}</em></h2>
           </Reveal>
 
           <div className="vision-grid">
             <Reveal className="vision-manifesto" delay={0.1}>
-              <p>Trabalho entre o detalhe técnico e a necessidade de negócio. Isso significa ouvir o processo, desenhar a arquitetura certa e entregar experiências que não criam mais fricção.</p>
-              <a href="#contato" onClick={(event) => navigateToSection(event, "#contato")} className="text-link">Vamos mapear a sua operação <ArrowUpRight size={17} /></a>
+              <p>{copy.vision.intro}</p>
+              <a href="#contato" onClick={(event) => navigateToSection(event, "#contato")} className="text-link">{copy.vision.action} <ArrowUpRight size={17} /></a>
             </Reveal>
 
             <div className="capability-stack">
               <TiltCard delay={0.04}>
                 <div className="capability-icon"><Network size={20} /></div>
                 <span>01</span>
-                <h3>Sistemas conectados</h3>
-                <p>APIs e integrações para transformar ferramentas isoladas em fluxos consistentes.</p>
+                <h3>{copy.vision.cards[0].title}</h3>
+                <p>{copy.vision.cards[0].description}</p>
               </TiltCard>
               <TiltCard delay={0.1}>
                 <div className="capability-icon"><Zap size={20} /></div>
                 <span>02</span>
-                <h3>Automação com intenção</h3>
-                <p>Processos que reduzem tarefas repetitivas e deixam a equipe focada no que exige decisão.</p>
+                <h3>{copy.vision.cards[1].title}</h3>
+                <p>{copy.vision.cards[1].description}</p>
               </TiltCard>
               <TiltCard delay={0.16}>
                 <div className="capability-icon"><Layers3 size={20} /></div>
                 <span>03</span>
-                <h3>Produtos que evoluem</h3>
-                <p>Interfaces e estruturas pensadas para manter performance quando o negócio cresce.</p>
+                <h3>{copy.vision.cards[2].title}</h3>
+                <p>{copy.vision.cards[2].description}</p>
               </TiltCard>
             </div>
           </div>
@@ -478,44 +563,42 @@ export default function PortfolioExperience() {
         <section className="section section--method" data-code="METHOD / 02">
           <div className="method-art" style={{ backgroundImage: `url(${systemsOrbit})` }} aria-hidden="true" />
           <Reveal className="method-statement">
-            <p className="section-index">02 / MÉTODO</p>
-            <h2>Clareza para decidir.<br /><span className="heading-plain">Rigor para construir.</span></h2>
+            <p className="section-index">{copy.method.index}</p>
+            <h2>{copy.method.title[0]}<br /><span className="heading-plain">{copy.method.title[1]}</span></h2>
           </Reveal>
           <Reveal className="method-steps" delay={0.14}>
-            <div><span>01</span><strong>Descobrir</strong><p>Entender a rotina, os limites e o objetivo da operação.</p></div>
-            <div><span>02</span><strong>Estruturar</strong><p>Definir experiência, dados, integrações e caminho de escala.</p></div>
-            <div><span>03</span><strong>Entregar</strong><p>Construir, validar e evoluir a solução em ciclos objetivos.</p></div>
+            <div><span>01</span><strong>{copy.method.steps[0].title}</strong><p>{copy.method.steps[0].description}</p></div>
+            <div><span>02</span><strong>{copy.method.steps[1].title}</strong><p>{copy.method.steps[1].description}</p></div>
+            <div><span>03</span><strong>{copy.method.steps[2].title}</strong><p>{copy.method.steps[2].description}</p></div>
           </Reveal>
         </section>
 
         <section id="projeto" className="section section--case" data-code="CASE / 03">
           <Reveal className="section-heading section-heading--case">
-            <p className="section-index">03 / VITRINE VERCEL</p>
-            <h2>Seu trabalho mais recente,<br /><em>sempre em produção.</em></h2>
+            <p className="section-index">{copy.projects.index}</p>
+            <h2>{copy.projects.title[0]}<br /><em>{copy.projects.title[1]}</em></h2>
           </Reveal>
 
           <Reveal className="case-card" delay={0.12}>
             <div className="case-art" style={{ backgroundImage: `url(${caseStudySurface})` }} />
-            {latestProject && !isEmbeddedPreview && <ProjectLivePreview project={latestProject} variant="featured" forceFallback={forcePreviewFallback} />}
+            {latestProject && !isEmbeddedPreview && <ProjectLivePreview project={latestProject} variant="featured" copy={copy} forceFallback={forcePreviewFallback} />}
             <div className="case-number">LATEST / 01</div>
             <div className="case-content">
-              <div>
-                <p className="case-kicker">{latestLoading ? "ATUALIZANDO PROJETO" : "PROJETO MAIS RECENTE NO VERCEL"}</p>
-              </div>
+              <div><p className="case-kicker">{latestLoading ? copy.projects.loading : copy.projects.latest}</p></div>
               <div className="case-details">
                 <h3 className="case-title--reading">{latestProjectName}</h3>
-                <p>{projectsError ? "A integração Vercel precisa ser concluída para exibir o projeto mais recente." : "Este card é atualizado pela sua conta Vercel e sempre mostra o último projeto com deployment ativo em produção."}</p>
-                <ul className="case-tags" aria-label="Tecnologias do projeto">
-                  <li>Vercel</li><li>Produção</li>{latestProject?.updatedAt ? <li>Atualizado recentemente</li> : null}
+                <p>{projectsError ? copy.projects.error : copy.projects.description}</p>
+                <ul className="case-tags" aria-label={copy.projects.tags.join(", ")}>
+                  <li>{copy.projects.tags[0]}</li><li>{copy.projects.tags[1]}</li>{latestProject?.updatedAt ? <li>{copy.projects.tags[2]}</li> : null}
                 </ul>
                 <div className="case-actions">
                   {latestProject ? (
-                    <a href={latestProject.previewUrl ?? latestProject.url} target="_blank" rel="noreferrer" className="case-link">Visitar projeto <ArrowUpRight size={18} /></a>
+                    <a href={latestProject.previewUrl ?? latestProject.url} target="_blank" rel="noreferrer" className="case-link">{copy.projects.visit} <ArrowUpRight size={18} /></a>
                   ) : (
-                    <span className="case-link case-link--disabled">Aguardando projeto <ArrowUpRight size={18} /></span>
+                    <span className="case-link case-link--disabled">{copy.projects.noProject} <ArrowUpRight size={18} /></span>
                   )}
                   <button type="button" className="case-link case-link--button" onClick={openProjects}>
-                    Ver meus projetos <FolderOpen size={17} />
+                    {copy.projects.viewAll} <FolderOpen size={17} />
                   </button>
                 </div>
               </div>
@@ -533,25 +616,25 @@ export default function PortfolioExperience() {
                 aria-live="polite"
               >
                 <div className="projects-catalog__heading">
-                  <div><span>CATÁLOGO / VERCEL</span><h3>Projetos ativos</h3></div>
-                  <button type="button" onClick={() => setProjectsOpen(false)} aria-label="Fechar lista de projetos"><X size={18} /></button>
+                  <div><span>{copy.projects.catalogLabel}</span><h3>{copy.projects.catalogTitle}</h3></div>
+                  <button type="button" onClick={() => setProjectsOpen(false)} aria-label={copy.projects.closeCatalog}><X size={18} /></button>
                 </div>
-                {projectsLoading && <p className="projects-status">Carregando os projetos ativos da sua conta Vercel.</p>}
-                {projectsError && <p className="projects-status">Não foi possível atualizar a lista agora. Tente novamente em alguns instantes.</p>}
-                {!projectsLoading && !projectsError && projects.length === 0 && <p className="projects-status">Nenhum projeto ativo foi encontrado nesta conta Vercel.</p>}
+                {projectsLoading && <p className="projects-status">{copy.projects.loadingCatalog}</p>}
+                {projectsError && <p className="projects-status">{copy.projects.catalogError}</p>}
+                {!projectsLoading && !projectsError && projects.length === 0 && <p className="projects-status">{copy.projects.emptyCatalog}</p>}
                 <div className="projects-grid">
                   {projects.map((project) => {
                     const projectMeta = getProjectCatalogMeta(project.name);
                     return (
                       <a className="project-entry" href={project.previewUrl ?? project.url} target="_blank" rel="noreferrer" key={project.id}>
                         <div className="project-entry__visual">
-                          <ProjectLivePreview project={project} variant="catalog" forceFallback={forcePreviewFallback} />
+                          <ProjectLivePreview project={project} variant="catalog" copy={copy} forceFallback={forcePreviewFallback} />
                         </div>
                         <div className="project-entry__content">
                           <strong>{projectMeta.title}</strong>
                           <ProjectTechnologyIcons technologies={projectMeta.technologies} />
                         </div>
-                        <p className="project-entry__description">{projectMeta.description}</p>
+                        <p className="project-entry__description">{getLocalizedProjectDescription(project.name, copy)}</p>
                         <ArrowUpRight size={18} aria-hidden="true" />
                       </a>
                     );
@@ -564,18 +647,18 @@ export default function PortfolioExperience() {
 
         <section id="stack" className="section section--stack" data-code="STACK / 04">
           <Reveal className="section-heading">
-            <p className="section-index">04 / FERRAMENTAS, NÃO ENFEITES</p>
-            <h2>Decisões técnicas para<br /><span className="heading-copper">sistemas que duram.</span></h2>
+            <p className="section-index">{copy.stack.index}</p>
+            <h2>{copy.stack.title[0]}<br /><span className="heading-copper">{copy.stack.title[1]}</span></h2>
           </Reveal>
           <div className="stack-layout">
             <Reveal className="stack-note" delay={0.06}>
               <Code2 size={23} />
-              <p>A stack não é uma coleção de logos. É um conjunto de decisões para cada contexto, equipe e velocidade de evolução.</p>
+              <p>{copy.stack.intro}</p>
             </Reveal>
             <div className="stack-groups">
-              <TiltCard delay={0.04}><span className="stack-icon"><Code2 size={20} /></span><h3>Interfaces</h3><p>React · TypeScript · JavaScript · SCSS</p></TiltCard>
-              <TiltCard delay={0.1}><span className="stack-icon"><Boxes size={20} /></span><h3>Serviços</h3><p>Node.js · APIs REST · Express · Supabase</p></TiltCard>
-              <TiltCard delay={0.16}><span className="stack-icon"><Database size={20} /></span><h3>Dados & entrega</h3><p>PostgreSQL · MongoDB · Docker · Linux</p></TiltCard>
+              <TiltCard delay={0.04}><span className="stack-icon"><Code2 size={20} /></span><h3>{copy.stack.groups[0].title}</h3><p>{copy.stack.groups[0].description}</p></TiltCard>
+              <TiltCard delay={0.1}><span className="stack-icon"><Boxes size={20} /></span><h3>{copy.stack.groups[1].title}</h3><p>{copy.stack.groups[1].description}</p></TiltCard>
+              <TiltCard delay={0.16}><span className="stack-icon"><Database size={20} /></span><h3>{copy.stack.groups[2].title}</h3><p>{copy.stack.groups[2].description}</p></TiltCard>
             </div>
           </div>
         </section>
@@ -583,12 +666,12 @@ export default function PortfolioExperience() {
         <section id="contato" className="contact-section" style={{ backgroundImage: `url(${depthField})` }}>
           <div className="contact-overlay" />
           <Reveal className="contact-content">
-            <p className="section-index">05 / PRÓXIMO PASSO</p>
-            <h2>Uma boa solução começa<br />com uma <em>conversa clara.</em></h2>
-            <p>Se você tem um processo para melhorar, uma ideia para validar ou um produto para estruturar, podemos desenhar o próximo passo juntos.</p>
+            <p className="section-index">{copy.contact.index}</p>
+            <h2>{copy.contact.title[0]}<br />{copy.contact.title[1].startsWith("com uma ") ? "com uma " : ""}<em>{copy.contact.title[1].replace(/^com uma\s/, "")}</em></h2>
+            <p>{copy.contact.intro}</p>
             <div className="contact-actions">
-              <Button asChild className="signal-button"><a href="mailto:contato@wesleybarroso.com">Escrever um e-mail <Mail size={17} /></a></Button>
-              <Button asChild variant="outline" className="quiet-button"><a href="https://wa.me/5591993087692" target="_blank" rel="noreferrer">Falar no WhatsApp <ArrowUpRight size={17} /></a></Button>
+              <Button asChild className="signal-button"><a href="mailto:contato@wesleybarroso.com">{copy.contact.email} <Mail size={17} /></a></Button>
+              <Button asChild variant="outline" className="quiet-button"><a href="https://wa.me/5591993087692" target="_blank" rel="noreferrer">{copy.contact.whatsapp} <ArrowUpRight size={17} /></a></Button>
             </div>
           </Reveal>
         </section>
@@ -600,10 +683,10 @@ export default function PortfolioExperience() {
             <a href="https://www.linkedin.com/in/wesleybleite" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={19} /></a>
             <a href="mailto:contato@wesleybarroso.com" aria-label="E-mail"><Mail size={19} /></a>
           </div>
-          <a href="#inicio" onClick={(event) => navigateToSection(event, "#inicio")} className="back-to-top">VOLTAR AO TOPO <ArrowUpRight size={15} /></a>
+          <a href="#inicio" onClick={(event) => navigateToSection(event, "#inicio")} className="back-to-top">{copy.footer.backToTop} <ArrowUpRight size={15} /></a>
         </footer>
       </main>
-      <CookieConsentBanner />
+      <CookieConsentBanner copy={copy.cookies} />
     </div>
   );
 }

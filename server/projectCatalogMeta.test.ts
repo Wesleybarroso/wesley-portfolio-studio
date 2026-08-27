@@ -11,6 +11,10 @@ describe("metadados do catálogo de projetos", () => {
     });
   });
 
+  it("mantém o nome editorial correto do Portfólio Wesley", () => {
+    expect(getProjectCatalogMeta("portifolio").title).toBe("Portfólio Wesley");
+  });
+
   it("mantém um cartão informativo para novos projetos descobertos automaticamente", () => {
     const meta = getProjectCatalogMeta("novo-projeto");
     expect(meta.title).toBe("novo-projeto");
