@@ -3,12 +3,14 @@
  * composição assimétrica e motion preciso para uma presença de engenharia premium.
  */
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc";
 import {
   ArrowDown,
   ArrowUpRight,
   Boxes,
   Code2,
   Database,
+  FolderOpen,
   Github,
   Layers3,
   Linkedin,
@@ -19,6 +21,7 @@ import {
   Zap,
 } from "lucide-react";
 import {
+  AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
@@ -141,8 +144,22 @@ function TiltCard({
 export default function PortfolioExperience() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("inicio");
+  const [projectsOpen, setProjectsOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.2 });
+  const latestProjectQuery = trpc.vercelProjects.latest.useQuery(undefined, {
+    retry: 1,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
+  const projectsQuery = trpc.vercelProjects.list.useQuery(undefined, {
+    enabled: false,
+    retry: 1,
+    staleTime: 0,
+  });
+  const latestProject = latestProjectQuery.data;
+  const latestProjectName = latestProject?.name
+    ?? (latestProjectQuery.isFetching ? "Consultando Vercel" : "Aguardando projeto ativo");
 
   useEffect(() => {
     const sections = navItems
@@ -163,6 +180,11 @@ export default function PortfolioExperience() {
 
   function closeMenu() {
     setMenuOpen(false);
+  }
+
+  function openProjects() {
+    setProjectsOpen(true);
+    void projectsQuery.refetch();
   }
 
   return (
@@ -298,27 +320,66 @@ export default function PortfolioExperience() {
 
         <section id="projeto" className="section section--case" data-code="CASE / 03">
           <Reveal className="section-heading section-heading--case">
-            <p className="section-index">03 / TRABALHO SELECIONADO</p>
-            <h2>Um caso, do propósito<br /><em>à experiência digital.</em></h2>
+            <p className="section-index">03 / VITRINE VERCEL</p>
+            <h2>Seu trabalho mais recente,<br /><em>sempre em produção.</em></h2>
           </Reveal>
 
           <Reveal className="case-card" delay={0.12}>
             <div className="case-art" style={{ backgroundImage: `url(${caseStudySurface})` }} />
-            <div className="case-number">CASE / 01</div>
+            <div className="case-number">LATEST / 01</div>
             <div className="case-content">
               <div>
-                <p className="case-kicker">PLATAFORMA DE GESTÃO AMBIENTAL</p>
-                <h3>Projeto<br />Verde Ação.</h3>
+                <p className="case-kicker">{latestProjectQuery.isFetching ? "ATUALIZANDO PROJETO" : "PROJETO MAIS RECENTE NO VERCEL"}</p>
+                <h3>{latestProjectName}</h3>
               </div>
               <div className="case-details">
-                <p>Uma presença digital pensada para aproximar voluntariado, iniciativas ambientais e uma experiência de navegação responsiva.</p>
+                <p>{latestProjectQuery.error ? "A integração Vercel precisa ser concluída para exibir o projeto mais recente." : "Este card é atualizado pela sua conta Vercel e sempre mostra o último projeto com deployment ativo em produção."}</p>
                 <ul className="case-tags" aria-label="Tecnologias do projeto">
-                  <li>React</li><li>JavaScript</li><li>SCSS</li><li>Express</li>
+                  <li>Vercel</li><li>Produção</li>{latestProject?.updatedAt ? <li>Atualizado recentemente</li> : null}
                 </ul>
-                <a href="https://projetoverdeacao-b1n7m7ons-wesleys-projects-c7635016.vercel.app/" target="_blank" rel="noreferrer" className="case-link">Visitar projeto <ArrowUpRight size={18} /></a>
+                <div className="case-actions">
+                  {latestProject ? (
+                    <a href={latestProject.url} target="_blank" rel="noreferrer" className="case-link">Visitar projeto <ArrowUpRight size={18} /></a>
+                  ) : (
+                    <span className="case-link case-link--disabled">Aguardando projeto <ArrowUpRight size={18} /></span>
+                  )}
+                  <button type="button" className="case-link case-link--button" onClick={openProjects}>
+                    Ver meus projetos <FolderOpen size={17} />
+                  </button>
+                </div>
               </div>
             </div>
           </Reveal>
+
+          <AnimatePresence initial={false}>
+            {projectsOpen && (
+              <motion.div
+                className="projects-catalog"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
+                aria-live="polite"
+              >
+                <div className="projects-catalog__heading">
+                  <div><span>CATÁLOGO / VERCEL</span><h3>Projetos ativos</h3></div>
+                  <button type="button" onClick={() => setProjectsOpen(false)} aria-label="Fechar lista de projetos"><X size={18} /></button>
+                </div>
+                {projectsQuery.isFetching && <p className="projects-status">Carregando os projetos ativos da sua conta Vercel.</p>}
+                {projectsQuery.error && <p className="projects-status">Não foi possível atualizar a lista agora. Tente novamente em alguns instantes.</p>}
+                {!projectsQuery.isFetching && !projectsQuery.error && projectsQuery.data?.length === 0 && <p className="projects-status">Nenhum projeto ativo foi encontrado nesta conta Vercel.</p>}
+                <div className="projects-grid">
+                  {projectsQuery.data?.map((project, index) => (
+                    <a className="project-entry" href={project.url} target="_blank" rel="noreferrer" key={project.id}>
+                      <span>0{index + 1} / PRODUÇÃO</span>
+                      <strong>{project.name}</strong>
+                      <ArrowUpRight size={18} />
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
 
         <section id="stack" className="section section--stack" data-code="STACK / 04">
