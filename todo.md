@@ -52,9 +52,11 @@
 - [x] Corrigir o nome editorial exibido para o projeto `portifolio` como “Portfólio Wesley”, inclusive quando ele for o card mais recente.
 - [x] Validar em produção o nome corrigido no card de projeto mais recente e no catálogo dinâmico.
 - [x] Adicionar um seletor acessível de idioma com Português (Brasil), English, Français, Italiano, Español, Deutsch, Русский, Dansk e Norsk.
-- [ ] Traduzir todos os textos visíveis do portfólio para os idiomas disponibilizados, sem alterar URLs, links de contato ou nomes próprios.
-- [ ] Persistir a preferência de idioma no navegador e validar a troca por mouse e teclado em desktop e mobile.
-- [ ] Traduzir rótulos visíveis remanescentes, incluindo `LIVE / PREVIEW`, `LATEST / 01` e `ENGINEERING SYSTEMS`, conforme o idioma selecionado.
-- [ ] Validar em viewport mobile a troca de idioma por interação real e a persistência da escolha após recarregar.
-- [ ] Traduzir o título e os metadados de documento conforme o idioma selecionado e revalidar a publicação final.
-- [ ] Validar em viewport mobile a troca de idioma por teclado e sua persistência após recarregar.
+- [x] Traduzir todos os textos visíveis do portfólio para os idiomas disponibilizados, sem alterar URLs, links de contato ou nomes próprios.
+- [x] Persistir a preferência de idioma no navegador e validar a troca por mouse e teclado em desktop e mobile.
+- [x] Traduzir rótulos visíveis remanescentes, incluindo `LIVE / PREVIEW`, `LATEST / 01` e `ENGINEERING SYSTEMS`, conforme o idioma selecionado.
+- [x] Validar em viewport mobile a troca de idioma por interação real e a persistência da escolha após recarregar.
+- [x] Traduzir o título e os metadados de documento conforme o idioma selecionado e revalidar a publicação final.
+- [x] Validar em viewport mobile a troca de idioma por teclado e sua persistência após recarregar.
+- [x] Traduzir o CTA visual “EXPLORE” nos idiomas disponibilizados e revalidar os modos PT-BR e EN em produção.
+- [x] Localizar os metadados de documento além do título, incluindo description e Open Graph quando presentes, e validar o resultado publicado.
