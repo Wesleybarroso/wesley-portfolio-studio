@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   getPortfolioCopy,
   isLocaleCode,
+  localeChrome,
+  pageTitles,
+  portraitStatusLabels,
   supportedLocales,
 } from "../client/src/lib/siteLocale";
 
@@ -26,6 +29,9 @@ describe("localização do portfólio", () => {
       expect(copy.navigation).toHaveLength(5);
       expect(copy.projects.viewAll.length).toBeGreaterThan(2);
       expect(copy.cookies.acceptAll.length).toBeGreaterThan(2);
+      expect(localeChrome[code].livePreview.length).toBeGreaterThan(2);
+      expect(portraitStatusLabels[code].length).toBeGreaterThan(2);
+      expect(pageTitles[code]).toContain("Wesley Barroso");
     });
   });
 

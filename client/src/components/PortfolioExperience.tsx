@@ -56,6 +56,8 @@ import {
   getPortfolioCopy,
   isLocaleCode,
   LOCALE_STORAGE_KEY,
+  localeChrome,
+  pageTitles,
   portraitStatusLabels,
   supportedLocales,
   type LocaleCode,
@@ -289,11 +291,13 @@ function ProjectLivePreview({
   project,
   variant,
   copy,
+  livePreviewLabel,
   forceFallback = false,
 }: {
   project: LiveProject;
   variant: PreviewVariant;
   copy: PortfolioCopy;
+  livePreviewLabel: string;
   forceFallback?: boolean;
 }) {
   const [previewState, setPreviewState] = useState<"loading" | "ready" | "fallback">("loading");
@@ -335,7 +339,7 @@ function ProjectLivePreview({
         />
       )}
       <span className={labelClassName}>
-        {previewState === "ready" ? "LIVE / PREVIEW" : previewState === "loading" ? copy.projects.previewLoading : copy.projects.directLink}
+        {previewState === "ready" ? livePreviewLabel : previewState === "loading" ? copy.projects.previewLoading : copy.projects.directLink}
       </span>
     </div>
   );
@@ -357,6 +361,7 @@ export default function PortfolioExperience() {
   const { scrollYProgress } = useScroll();
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.2 });
   const copy = getPortfolioCopy(locale);
+  const chrome = localeChrome[locale];
   const latestProjectName = latestProject
     ? getProjectCatalogMeta(latestProject.name).title
     : (latestLoading ? copy.projects.loading : copy.projects.noProject);
@@ -372,6 +377,7 @@ export default function PortfolioExperience() {
 
   useEffect(() => {
     document.documentElement.lang = locale;
+    document.title = pageTitles[locale];
   }, [locale]);
 
   useEffect(() => {
@@ -500,7 +506,7 @@ export default function PortfolioExperience() {
           <div className="grid-signal" aria-hidden="true" />
           <div className="hero-layout">
             <Reveal className="hero-copy">
-              <div className="hero-brand-stamp"><img src={mark} alt="" /><span>WESLEY.BARROSO<br /><small>ENGINEERING SYSTEMS</small></span></div>
+              <div className="hero-brand-stamp"><img src={mark} alt="" /><span>WESLEY.BARROSO<br /><small>{chrome.engineeringSystems}</small></span></div>
               <div className="eyebrow"><span className="signal-dot" /> {copy.eyebrow}</div>
               <h1>{copy.heroTitle[0]}<br />{copy.heroTitle[1].startsWith("a ") ? "a " : ""}<em>{copy.heroTitle[1].replace(/^a\s/, "")}</em></h1>
               <p className="hero-intro">{copy.heroIntro}</p>
@@ -526,7 +532,7 @@ export default function PortfolioExperience() {
           <a href="#visao" onClick={(event) => navigateToSection(event, "#visao")} className="scroll-cue" aria-label={copy.explore}><span>{copy.explore}</span><ArrowDown size={16} /></a>
         </section>
 
-        <section id="visao" className="section section--vision" data-code="SYSTEM / 01">
+        <section id="visao" className="section section--vision" data-code={copy.vision.index}>
           <Reveal className="section-heading">
             <p className="section-index">{copy.vision.index}</p>
             <h2>{copy.vision.title[0]}<br /><em>{copy.vision.title[1]}</em></h2>
@@ -561,7 +567,7 @@ export default function PortfolioExperience() {
           </div>
         </section>
 
-        <section className="section section--method" data-code="METHOD / 02">
+        <section className="section section--method" data-code={copy.method.index}>
           <div className="method-art" style={{ backgroundImage: `url(${systemsOrbit})` }} aria-hidden="true" />
           <Reveal className="method-statement">
             <p className="section-index">{copy.method.index}</p>
@@ -574,7 +580,7 @@ export default function PortfolioExperience() {
           </Reveal>
         </section>
 
-        <section id="projeto" className="section section--case" data-code="CASE / 03">
+        <section id="projeto" className="section section--case" data-code={copy.projects.index}>
           <Reveal className="section-heading section-heading--case">
             <p className="section-index">{copy.projects.index}</p>
             <h2>{copy.projects.title[0]}<br /><em>{copy.projects.title[1]}</em></h2>
@@ -582,8 +588,8 @@ export default function PortfolioExperience() {
 
           <Reveal className="case-card" delay={0.12}>
             <div className="case-art" style={{ backgroundImage: `url(${caseStudySurface})` }} />
-            {latestProject && !isEmbeddedPreview && <ProjectLivePreview project={latestProject} variant="featured" copy={copy} forceFallback={forcePreviewFallback} />}
-            <div className="case-number">LATEST / 01</div>
+            {latestProject && !isEmbeddedPreview && <ProjectLivePreview project={latestProject} variant="featured" copy={copy} livePreviewLabel={chrome.livePreview} forceFallback={forcePreviewFallback} />}
+            <div className="case-number">{chrome.latestShort}</div>
             <div className="case-content">
               <div><p className="case-kicker">{latestLoading ? copy.projects.loading : copy.projects.latest}</p></div>
               <div className="case-details">
@@ -629,7 +635,7 @@ export default function PortfolioExperience() {
                     return (
                       <a className="project-entry" href={project.previewUrl ?? project.url} target="_blank" rel="noreferrer" key={project.id}>
                         <div className="project-entry__visual">
-                          <ProjectLivePreview project={project} variant="catalog" copy={copy} forceFallback={forcePreviewFallback} />
+                          <ProjectLivePreview project={project} variant="catalog" copy={copy} livePreviewLabel={chrome.livePreview} forceFallback={forcePreviewFallback} />
                         </div>
                         <div className="project-entry__content">
                           <strong>{projectMeta.title}</strong>
@@ -646,7 +652,7 @@ export default function PortfolioExperience() {
           </AnimatePresence>
         </section>
 
-        <section id="stack" className="section section--stack" data-code="STACK / 04">
+        <section id="stack" className="section section--stack" data-code={copy.stack.index}>
           <Reveal className="section-heading">
             <p className="section-index">{copy.stack.index}</p>
             <h2>{copy.stack.title[0]}<br /><span className="heading-copper">{copy.stack.title[1]}</span></h2>

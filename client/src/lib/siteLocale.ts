@@ -14,6 +14,18 @@ export type LocaleCode = (typeof supportedLocales)[number]["code"];
 
 export const LOCALE_STORAGE_KEY = "wesley-portfolio-locale";
 
+export const pageTitles: Record<LocaleCode, string> = {
+  "pt-BR": "Wesley Barroso — Engenharia de Software",
+  en: "Wesley Barroso — Software Engineering",
+  fr: "Wesley Barroso — Ingénierie logicielle",
+  it: "Wesley Barroso — Ingegneria del software",
+  es: "Wesley Barroso — Ingeniería de software",
+  de: "Wesley Barroso — Softwareentwicklung",
+  ru: "Wesley Barroso — Разработка программного обеспечения",
+  da: "Wesley Barroso — Softwareteknik",
+  no: "Wesley Barroso — Programvareutvikling",
+};
+
 export const portraitStatusLabels: Record<LocaleCode, string> = {
   "pt-BR": "DISPONÍVEL",
   en: "AVAILABLE",
@@ -24,6 +36,22 @@ export const portraitStatusLabels: Record<LocaleCode, string> = {
   ru: "ДОСТУПЕН",
   da: "TILGÆNGELIG",
   no: "TILGJENGELIG",
+};
+
+export const localeChrome: Record<LocaleCode, {
+  engineeringSystems: string;
+  livePreview: string;
+  latestShort: string;
+}> = {
+  "pt-BR": { engineeringSystems: "SISTEMAS DE ENGENHARIA", livePreview: "PRÉVIA AO VIVO", latestShort: "RECENTE / 01" },
+  en: { engineeringSystems: "ENGINEERING SYSTEMS", livePreview: "LIVE / PREVIEW", latestShort: "LATEST / 01" },
+  fr: { engineeringSystems: "SYSTÈMES D’INGÉNIERIE", livePreview: "APERÇU EN DIRECT", latestShort: "RÉCENT / 01" },
+  it: { engineeringSystems: "SISTEMI DI INGEGNERIA", livePreview: "ANTEPRIMA DAL VIVO", latestShort: "RECENTE / 01" },
+  es: { engineeringSystems: "SISTEMAS DE INGENIERÍA", livePreview: "VISTA PREVIA EN VIVO", latestShort: "RECIENTE / 01" },
+  de: { engineeringSystems: "ENGINEERING-SYSTEME", livePreview: "LIVE-VORSCHAU", latestShort: "AKTUELL / 01" },
+  ru: { engineeringSystems: "ИНЖЕНЕРНЫЕ СИСТЕМЫ", livePreview: "ПРЕДПРОСМОТР В ЭФИРЕ", latestShort: "ПОСЛЕДНИЙ / 01" },
+  da: { engineeringSystems: "INGENIØRSYSTEMER", livePreview: "LIVEFORHÅNDSVISNING", latestShort: "SENESTE / 01" },
+  no: { engineeringSystems: "INGENIØRSYSTEMER", livePreview: "DIREKTE FORHÅNDSVISNING", latestShort: "SISTE / 01" },
 };
 
 type StepCopy = { title: string; description: string };

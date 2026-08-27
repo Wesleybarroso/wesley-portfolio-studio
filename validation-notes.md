@@ -85,3 +85,9 @@ Após a publicação do commit `07dee70`, o endpoint público voltou a ser consu
 Em viewport de 390 × 844 px, os cinco cards atuais iniciaram a prévia imediatamente quando o catálogo abriu e chegaram ao estado `ready`, cada um com destino público estável, título, ao menos um ícone de tecnologia e descrição editorial. Não houve transbordamento horizontal nem barra nativa visível. A navegação por teclado levou o foco ao primeiro card e revelou a descrição com opacidade total, confirmando a alternativa acessível ao hover.
 
 As capturas diretas da mesma publicação enquadraram tanto o hero quanto o primeiro card do catálogo em 390 × 844 px. O hero manteve marca, navegação, título, texto e CTAs legíveis. No catálogo, o primeiro card ficou integralmente dentro da viewport, com moldura de foco visível, prévia `LIVE / PREVIEW`, título, três ícones tecnológicos e a descrição revelada; o card mediu 304 × 320 px e o título usou 20 px. A grade permaneceu em uma coluna, sem corte horizontal.
+
+## Localização publicada — 27 de agosto de 2026
+
+O projeto técnico `portifolio` foi confirmado no catálogo público com o nome editorial **Portfólio Wesley**. O seletor exibiu os nove idiomas solicitados: Português (Brasil), English, Français, Italiano, Español, Deutsch, Русский, Dansk e Norsk. Em English, a navegação, as seções, os CTAs, o catálogo, o aviso de cookies, a etiqueta de disponibilidade, a marca de sistemas e o rótulo de prévia foram atualizados; URLs, contatos e nomes próprios foram preservados.
+
+No desktop, o idioma English permaneceu selecionado após recarregar a página; o teclado moveu o foco do seletor para Português (Brasil) e Enter aplicou a seleção. No viewport mobile de 390 × 844 px, o menu visível abriu por interação, listou os nove idiomas dentro de um painel de 240 × 358 px totalmente enquadrado, alterou para English e preservou `locale: en` após nova carga. A validação não registrou transbordamento horizontal.
