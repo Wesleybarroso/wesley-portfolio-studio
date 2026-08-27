@@ -81,13 +81,19 @@ export function isFrameEmbeddingBlocked(xFrameOptions: string | null, contentSec
     || /frame-ancestors\s+[^;]*(?:'none'|'self')/.test(policy);
 }
 
-export function getPreferredPreviewUrl(project: Project, aliases: VercelAlias[]) {
+export function getPreferredPreviewUrl(project: Project, aliases: VercelAlias[], teamScope: string) {
   const candidates = aliases
     .filter((alias) => alias.projectId === project.id && alias.alias && !alias.redirect)
     .map((alias) => alias.alias as string);
+  const scopeIsSlug = !teamScope.startsWith("team_");
+  const stablePublicVercelDomain = candidates
+    .filter((alias) => alias.endsWith(".vercel.app"))
+    .filter((alias) => alias === `${project.name}.vercel.app` || alias.startsWith(`${project.name}-`))
+    .filter((alias) => !scopeIsSlug || !alias.includes(teamScope))
+    .sort((first, second) => first.length - second.length)[0];
   const customDomain = candidates.find((alias) => !alias.endsWith(".vercel.app"));
   const stableVercelDomain = candidates.find((alias) => alias.startsWith(`${project.name}.`));
-  const selectedAlias = customDomain ?? stableVercelDomain ?? candidates[0];
+  const selectedAlias = stablePublicVercelDomain ?? customDomain ?? stableVercelDomain ?? candidates[0];
 
   return selectedAlias ? `https://${selectedAlias}` : project.url;
 }
@@ -142,7 +148,7 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
     const activeProjects = normalizeProjects(payload.deployments ?? []);
     const projects = await Promise.all(
       activeProjects.map(async (project) => {
-        const previewUrl = getPreferredPreviewUrl(project, aliasesPayload.aliases ?? []);
+        const previewUrl = getPreferredPreviewUrl(project, aliasesPayload.aliases ?? [], teamScope);
         return {
           ...project,
           previewUrl,

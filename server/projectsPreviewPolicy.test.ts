@@ -27,12 +27,13 @@ describe("getPreferredPreviewUrl", () => {
     expect(getPreferredPreviewUrl(project, [
       { projectId: "project-1", alias: "altixdev-hash.vercel.app" },
       { projectId: "project-1", alias: "altixdev.com.br" },
-    ])).toBe("https://altixdev.com.br");
+      { projectId: "project-1", alias: "altixdev-chi.vercel.app" },
+    ], "wesleys-projects-c7635016")).toBe("https://altixdev-chi.vercel.app");
   });
 
   it("mantém a URL do deployment quando não há alias utilizável", () => {
     expect(getPreferredPreviewUrl(project, [
       { projectId: "project-1", alias: "old.example.com", redirect: "new.example.com" },
-    ])).toBe(project.url);
+    ], "wesleys-projects-c7635016")).toBe(project.url);
   });
 });

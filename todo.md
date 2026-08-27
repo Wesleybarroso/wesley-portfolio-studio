@@ -27,3 +27,5 @@
 - [ ] Exibir uma miniatura real do deployment mais recente em cada projeto do catálogo ativo.
 - [ ] Sincronizar as miniaturas com o deployment de produção mais recente de cada projeto Vercel.
 - [ ] Validar em produção o carregamento, o fallback e os links de cada card do catálogo.
+- [ ] Priorizar o link público estável de cada projeto em vez da URL temporária de deployment protegida.
+- [ ] Validar a prévia da Altixdev usando o domínio público `altixdev-chi.vercel.app`.

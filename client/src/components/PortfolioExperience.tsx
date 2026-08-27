@@ -463,7 +463,7 @@ export default function PortfolioExperience() {
                 </ul>
                 <div className="case-actions">
                   {latestProject ? (
-                    <a href={latestProject.url} target="_blank" rel="noreferrer" className="case-link">Visitar projeto <ArrowUpRight size={18} /></a>
+                    <a href={latestProject.previewUrl ?? latestProject.url} target="_blank" rel="noreferrer" className="case-link">Visitar projeto <ArrowUpRight size={18} /></a>
                   ) : (
                     <span className="case-link case-link--disabled">Aguardando projeto <ArrowUpRight size={18} /></span>
                   )}
@@ -494,7 +494,7 @@ export default function PortfolioExperience() {
                 {!projectsLoading && !projectsError && projects.length === 0 && <p className="projects-status">Nenhum projeto ativo foi encontrado nesta conta Vercel.</p>}
                 <div className="projects-grid">
                   {projects.map((project, index) => (
-                    <a className="project-entry" href={project.url} target="_blank" rel="noreferrer" key={project.id}>
+                    <a className="project-entry" href={project.previewUrl ?? project.url} target="_blank" rel="noreferrer" key={project.id}>
                       <ProjectLivePreview project={project} variant="catalog" forceFallback={forcePreviewFallback} />
                       <span>0{index + 1} / PRODUÇÃO</span>
                       <strong>{project.name}</strong>
