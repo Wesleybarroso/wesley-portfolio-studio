@@ -28,7 +28,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
 const portrait = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/irQMWEfLLujrOPUg.png";
 const mark = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663921700779/JdZtjGQLUaaINXmZ.png";
@@ -218,6 +218,13 @@ export default function PortfolioExperience() {
     setMenuOpen(false);
   }
 
+  function navigateToSection(event: MouseEvent<HTMLAnchorElement>, hash: string) {
+    event.preventDefault();
+    document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+    setActiveSection(hash.slice(1));
+  }
+
   function openProjects() {
     setProjectsOpen(true);
     setProjectsLoading(true);
@@ -236,7 +243,7 @@ export default function PortfolioExperience() {
       <motion.div className="scroll-progress" style={{ scaleX: progressScale }} />
 
       <aside className="command-rail" aria-label="Navegação principal">
-        <a href="#inicio" className="brand-lockup" aria-label="Ir para o início">
+        <a href="#inicio" className="brand-lockup" aria-label="Ir para o início" onClick={(event) => navigateToSection(event, "#inicio")}>
           <img src={mark} alt="Símbolo WB" className="brand-mark" />
           <span>WESLEY<br />BARROSO</span>
           <b className="brand-code">WB/</b>
@@ -244,7 +251,7 @@ export default function PortfolioExperience() {
 
         <nav className="rail-nav">
           {navItems.map(([label, href], index) => (
-            <a href={href} key={href} className={`rail-link ${activeSection === href.slice(1) ? "is-active" : ""}`}>
+            <a href={href} key={href} onClick={(event) => navigateToSection(event, href)} className={`rail-link ${activeSection === href.slice(1) ? "is-active" : ""}`}>
               <small>0{index + 1}</small><span>{label}</span>
             </a>
           ))}
@@ -257,7 +264,7 @@ export default function PortfolioExperience() {
       </aside>
 
       <header className="mobile-command-bar">
-        <a href="#inicio" className="brand-lockup" aria-label="Ir para o início">
+        <a href="#inicio" className="brand-lockup" aria-label="Ir para o início" onClick={(event) => navigateToSection(event, "#inicio")}>
           <img src={mark} alt="Símbolo WB" className="brand-mark" />
           <span>WESLEY<br />BARROSO</span>
           <b className="brand-code">WB/</b>
@@ -274,7 +281,7 @@ export default function PortfolioExperience() {
         {menuOpen && (
           <nav className="mobile-menu">
             {navItems.map(([label, href], index) => (
-              <a href={href} key={href} onClick={closeMenu} className={activeSection === href.slice(1) ? "is-active" : ""}>
+              <a href={href} key={href} onClick={(event) => { navigateToSection(event, href); closeMenu(); }} className={activeSection === href.slice(1) ? "is-active" : ""}>
                 <small>0{index + 1}</small>{label}
               </a>
             ))}
@@ -294,10 +301,10 @@ export default function PortfolioExperience() {
               <p className="hero-intro">Sou <strong>Wesley Barroso</strong>. Projeto aplicações, integrações e automações que dão escala ao que realmente move o seu negócio.</p>
               <div className="hero-actions">
                 <Button asChild className="signal-button">
-                  <a href="#projeto">Ver trabalho selecionado <ArrowDown size={16} /></a>
+                  <a href="#projeto" onClick={(event) => navigateToSection(event, "#projeto")}>Ver trabalho selecionado <ArrowDown size={16} /></a>
                 </Button>
                 <Button asChild variant="outline" className="quiet-button">
-                  <a href="#contato">Iniciar uma conversa <ArrowUpRight size={16} /></a>
+                  <a href="#contato" onClick={(event) => navigateToSection(event, "#contato")}>Iniciar uma conversa <ArrowUpRight size={16} /></a>
                 </Button>
               </div>
               <div className="hero-metrics" aria-label="Especialidades">
@@ -311,7 +318,7 @@ export default function PortfolioExperience() {
               <PortraitPortal />
             </Reveal>
           </div>
-          <a href="#visao" className="scroll-cue" aria-label="Explorar a próxima seção"><span>EXPLORE</span><ArrowDown size={16} /></a>
+          <a href="#visao" onClick={(event) => navigateToSection(event, "#visao")} className="scroll-cue" aria-label="Explorar a próxima seção"><span>EXPLORE</span><ArrowDown size={16} /></a>
         </section>
 
         <section id="visao" className="section section--vision" data-code="SYSTEM / 01">
@@ -323,7 +330,7 @@ export default function PortfolioExperience() {
           <div className="vision-grid">
             <Reveal className="vision-manifesto" delay={0.1}>
               <p>Trabalho entre o detalhe técnico e a necessidade de negócio. Isso significa ouvir o processo, desenhar a arquitetura certa e entregar experiências que não criam mais fricção.</p>
-              <a href="#contato" className="text-link">Vamos mapear a sua operação <ArrowUpRight size={17} /></a>
+              <a href="#contato" onClick={(event) => navigateToSection(event, "#contato")} className="text-link">Vamos mapear a sua operação <ArrowUpRight size={17} /></a>
             </Reveal>
 
             <div className="capability-stack">
@@ -464,7 +471,7 @@ export default function PortfolioExperience() {
             <a href="https://www.linkedin.com/in/wesleybleite" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={19} /></a>
             <a href="mailto:contato@wesleybarroso.com" aria-label="E-mail"><Mail size={19} /></a>
           </div>
-          <a href="#inicio" className="back-to-top">VOLTAR AO TOPO <ArrowUpRight size={15} /></a>
+          <a href="#inicio" onClick={(event) => navigateToSection(event, "#inicio")} className="back-to-top">VOLTAR AO TOPO <ArrowUpRight size={15} /></a>
         </footer>
       </main>
     </div>

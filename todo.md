@@ -13,7 +13,8 @@
 - [ ] Publicar no GitHub a vitrine dinâmica já validada e confirmar o novo deploy no Vercel.
 - [ ] Confirmar em produção que o card antigo foi substituído pelo projeto mais recente da conta.
 - [x] Comparar integralmente a integração de projetos da Altixdev e adaptar qualquer componente ausente no portfólio.
-- [x] Substituir o adaptador tRPC não empacotado por uma função Vercel autocontida para a vitrine de projetos.
+- [ ] Substituir o adaptador tRPC não empacotado por uma função Vercel autocontida para a vitrine de projetos.
+- [ ] Garantir que o portfólio carregue no início, sem a âncora `#projeto` após atualização ou acesso direto.
 - [x] Implementar o card do projeto mais recente e o carregamento dos demais projetos ativos.
 - [x] Replicar a lógica de atualização de projetos da Altixdev no portfólio com apenas um card em destaque.
 - [x] Adicionar, ao lado de “Visitar projeto”, um botão para carregar todos os projetos ativos da conta Vercel.
