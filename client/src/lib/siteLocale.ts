@@ -14,6 +14,18 @@ export type LocaleCode = (typeof supportedLocales)[number]["code"];
 
 export const LOCALE_STORAGE_KEY = "wesley-portfolio-locale";
 
+export const portraitStatusLabels: Record<LocaleCode, string> = {
+  "pt-BR": "DISPONÍVEL",
+  en: "AVAILABLE",
+  fr: "DISPONIBLE",
+  it: "DISPONIBILE",
+  es: "DISPONIBLE",
+  de: "VERFÜGBAR",
+  ru: "ДОСТУПЕН",
+  da: "TILGÆNGELIG",
+  no: "TILGJENGELIG",
+};
+
 type StepCopy = { title: string; description: string };
 
 export type PortfolioCopy = {

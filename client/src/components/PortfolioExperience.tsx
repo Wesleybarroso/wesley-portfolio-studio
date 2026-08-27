@@ -56,6 +56,7 @@ import {
   getPortfolioCopy,
   isLocaleCode,
   LOCALE_STORAGE_KEY,
+  portraitStatusLabels,
   supportedLocales,
   type LocaleCode,
   type PortfolioCopy,
@@ -151,7 +152,7 @@ function Reveal({ children, className = "", delay = 0 }: RevealProps) {
   );
 }
 
-function PortraitPortal() {
+function PortraitPortal({ statusLabel }: { statusLabel: string }) {
   const reduceMotion = useReducedMotion();
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -194,7 +195,7 @@ function PortraitPortal() {
         <div className="portrait-shine" />
       </motion.div>
       <div className="portrait-tag portrait-tag--top">WB / 01</div>
-      <div className="portrait-tag portrait-tag--bottom"><span /> DISPONÍVEL</div>
+      <div className="portrait-tag portrait-tag--bottom"><span /> {statusLabel}</div>
     </div>
   );
 }
@@ -519,7 +520,7 @@ export default function PortfolioExperience() {
             </Reveal>
 
             <Reveal className="hero-portrait-wrap" delay={0.12}>
-              <PortraitPortal />
+              <PortraitPortal statusLabel={portraitStatusLabels[locale]} />
             </Reveal>
           </div>
           <a href="#visao" onClick={(event) => navigateToSection(event, "#visao")} className="scroll-cue" aria-label={copy.explore}><span>{copy.explore}</span><ArrowDown size={16} /></a>
