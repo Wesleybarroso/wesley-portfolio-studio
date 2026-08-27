@@ -178,6 +178,13 @@ export default function PortfolioExperience() {
     ?? (latestLoading ? "Consultando Vercel" : "Aguardando projeto ativo");
 
   useEffect(() => {
+    if (window.location.hash) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+    }
+    window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "instant" }));
+  }, []);
+
+  useEffect(() => {
     const sections = navItems
       .map(([, href]) => document.querySelector(href))
       .filter((section): section is Element => Boolean(section));
