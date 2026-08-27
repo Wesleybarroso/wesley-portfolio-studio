@@ -19,3 +19,6 @@
 - [x] Implementar o card do projeto mais recente e o carregamento dos demais projetos ativos.
 - [x] Replicar a lógica de atualização de projetos da Altixdev no portfólio com apenas um card em destaque.
 - [x] Adicionar, ao lado de “Visitar projeto”, um botão para carregar todos os projetos ativos da conta Vercel.
+- [x] Exibir uma prévia visual real do projeto mais recente dentro do card dinâmico.
+- [x] Corrigir as camadas do card para que os botões de projeto recebam clique normalmente.
+- [ ] Adicionar carregamento e fallback visual para prévias de projetos que não possam ser incorporadas.

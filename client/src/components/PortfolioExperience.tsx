@@ -176,6 +176,10 @@ export default function PortfolioExperience() {
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.2 });
   const latestProjectName = latestProject?.name
     ?? (latestLoading ? "Consultando Vercel" : "Aguardando projeto ativo");
+  const isEmbeddedPreview = new URLSearchParams(window.location.search).has("portfolio-preview");
+  const latestProjectPreview = latestProject && !isEmbeddedPreview
+    ? `${latestProject.url}${latestProject.url.includes("?") ? "&" : "?"}portfolio-preview=1`
+    : null;
 
   useEffect(() => {
     if (window.location.hash) {
@@ -384,6 +388,22 @@ export default function PortfolioExperience() {
 
           <Reveal className="case-card" delay={0.12}>
             <div className="case-art" style={{ backgroundImage: `url(${caseStudySurface})` }} />
+            {latestProjectPreview && (
+              <div className="case-preview" aria-hidden="true">
+                <div className="case-preview__fallback">
+                  <span>PRÉVIA DO PROJETO</span>
+                  <strong>{latestProjectName}</strong>
+                  <small>Use “Visitar projeto” para abrir a versão publicada.</small>
+                </div>
+                <iframe
+                  src={latestProjectPreview}
+                  title="Prévia do projeto mais recente"
+                  tabIndex={-1}
+                  loading="eager"
+                />
+                <span className="case-preview__label">LIVE / PREVIEW</span>
+              </div>
+            )}
             <div className="case-number">LATEST / 01</div>
             <div className="case-content">
               <div>

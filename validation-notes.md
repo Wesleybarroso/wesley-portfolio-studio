@@ -31,3 +31,15 @@ A prévia foi aberta pela URL sem fragmento e iniciou corretamente no hero. Em s
 A mesma verificação foi concluída na produção após o deploy `fix: abrir portfólio sempre no início`. A URL abriu no hero, sem fragmento, e o botão de trabalho selecionado conduziu à vitrine mantendo o endereço limpo. Portanto, atualizar a página volta ao início, como definido.
 
 O cenário de acesso direto também foi validado na prévia: a URL foi aberta com `#projeto`, o fragmento foi removido antes da renderização do conteúdo e a página iniciou no hero, no topo.
+
+## Prévia e interação do card
+
+Após adicionar a moldura `LIVE / PREVIEW`, a estrutura do card passou a reservar uma área exclusiva para a miniatura do site e os controles ficaram em camadas superiores. Na primeira captura, a moldura apareceu, mas a imagem remota ainda não havia sido desenhada dentro dela; o carregamento e a disponibilidade da miniatura precisam ser verificados separadamente antes da publicação. Os dois controles ficaram visíveis no DOM, com áreas independentes acima da camada visual.
+
+A verificação no navegador confirmou que a imagem de miniatura possui dimensões válidas, mas não conclui a requisição mesmo depois de aguardar. Por ser uma dependência externa com resposta pendente, essa abordagem não é adequada para garantir a visualização do card. A prévia será substituída por uma solução direta e interativa que não dependa de um serviço externo de captura.
+
+A prévia foi substituída por um quadro incorporado do site mais recente. Na validação visual, o conteúdo real do portfólio passou a aparecer dentro da moldura `LIVE / PREVIEW`, sem depender de uma imagem de serviço externo. Os controles `Visitar projeto` e `Ver meus projetos` continuam em uma camada acima da prévia.
+
+O botão `Ver meus projetos` foi acionado com sucesso e abriu o catálogo com todos os projetos ativos. O link `Visitar projeto` também foi acionado e abriu o site mais recente, confirmando que o quadro incorporado não intercepta os cliques dos controles do card.
+
+A prévia incorporada foi revalidada após a inclusão do fallback. O card exibiu o conteúdo visual real do projeto recente no quadro `LIVE / PREVIEW`; enquanto um projeto for carregado, a camada textual de fallback permanece atrás da incorporação e não prejudica a apresentação. Caso uma incorporação seja bloqueada em outro projeto, o card continuará exibindo título e orientação de acesso por meio do botão de visita.
