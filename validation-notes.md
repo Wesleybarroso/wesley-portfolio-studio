@@ -43,3 +43,13 @@ A prévia foi substituída por um quadro incorporado do site mais recente. Na va
 O botão `Ver meus projetos` foi acionado com sucesso e abriu o catálogo com todos os projetos ativos. O link `Visitar projeto` também foi acionado e abriu o site mais recente, confirmando que o quadro incorporado não intercepta os cliques dos controles do card.
 
 A prévia incorporada foi revalidada após a inclusão do fallback. O card exibiu o conteúdo visual real do projeto recente no quadro `LIVE / PREVIEW`; enquanto um projeto for carregado, a camada textual de fallback permanece atrás da incorporação e não prejudica a apresentação. Caso uma incorporação seja bloqueada em outro projeto, o card continuará exibindo título e orientação de acesso por meio do botão de visita.
+
+Na publicação Vercel associada ao commit `07ecfae`, a vitrine foi aberta no navegador e apresentou a página real do projeto recente dentro da moldura `LIVE / PREVIEW`. O quadro permaneceu visualmente separado do bloco de dados e os dois controles do card ficaram expostos na parte inferior direita, sem sobreposição da prévia.
+
+Ainda no deployment publicado, o botão `Ver meus projetos` abriu o catálogo com os cinco projetos ativos retornados pela conta. Em seguida, o link `Visitar projeto` foi acionado e navegou para o deployment ativo do projeto recente, confirmando a interatividade dos dois controles em produção.
+
+## Catálogo com prévias ao vivo
+
+A implementação local passou a criar uma prévia independente para cada card do catálogo. Cada quadro tenta carregar o deployment ativo correspondente e mantém um fallback legível com link direto caso a incorporação seja bloqueada ou não finalize no prazo. A expansão e o carregamento assíncrono do catálogo seguem em validação visual antes da publicação.
+
+Na validação local, o controle do catálogo abriu a lista com cinco cards. Cada card recebeu uma área própria de prévia `LIVE / PREVIEW`, sem camada interativa sobre o link principal. O primeiro projeto já apresentou seu conteúdo ao vivo; os demais permaneceram inicialmente no estado de carregamento enquanto suas páginas eram requisitadas.

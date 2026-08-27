@@ -22,3 +22,8 @@
 - [x] Exibir uma prévia visual real do projeto mais recente dentro do card dinâmico.
 - [x] Corrigir as camadas do card para que os botões de projeto recebam clique normalmente.
 - [ ] Adicionar carregamento e fallback visual para prévias de projetos que não possam ser incorporadas.
+- [ ] Implementar estados reais de carregamento, sucesso e indisponibilidade para a prévia incorporada.
+- [ ] Validar em produção a ativação manual do fallback e os controles do card.
+- [ ] Exibir uma miniatura real do deployment mais recente em cada projeto do catálogo ativo.
+- [ ] Sincronizar as miniaturas com o deployment de produção mais recente de cada projeto Vercel.
+- [ ] Validar em produção o carregamento, o fallback e os links de cada card do catálogo.

@@ -56,6 +56,10 @@ type LiveProject = {
   name: string;
   url: string;
   updatedAt: number;
+  previewUrl?: string;
+  preview?: {
+    embeddable: boolean;
+  };
 };
 
 type ProjectsPayload = {
@@ -163,6 +167,65 @@ function TiltCard({
   );
 }
 
+function addPortfolioPreviewParameter(projectUrl: string) {
+  const separator = projectUrl.includes("?") ? "&" : "?";
+  return `${projectUrl}${separator}portfolio-preview=1`;
+}
+
+function ProjectLivePreview({
+  project,
+  variant,
+  forceFallback = false,
+}: {
+  project: LiveProject;
+  variant: "featured" | "catalog";
+  forceFallback?: boolean;
+}) {
+  const [previewState, setPreviewState] = useState<"loading" | "ready" | "fallback">("loading");
+  const className = variant === "featured" ? "case-preview" : "project-live-preview";
+  const fallbackClassName = variant === "featured" ? "case-preview__fallback" : "project-live-preview__fallback";
+  const labelClassName = variant === "featured" ? "case-preview__label" : "project-live-preview__label";
+  const previewIsAllowed = project.preview?.embeddable !== false && !forceFallback;
+  const shouldRenderPreview = previewIsAllowed && previewState !== "fallback";
+
+  useEffect(() => {
+    if (!previewIsAllowed) {
+      setPreviewState("fallback");
+      return;
+    }
+
+    setPreviewState("loading");
+    const fallbackTimeout = window.setTimeout(() => {
+      setPreviewState((state) => state === "loading" ? "fallback" : state);
+    }, 7000);
+
+    return () => window.clearTimeout(fallbackTimeout);
+  }, [project.previewUrl, project.url, previewIsAllowed]);
+
+  return (
+    <div className={className} data-state={previewState} aria-hidden="true">
+      <div className={fallbackClassName}>
+        <span>{previewState === "loading" ? "CARREGANDO PRÉVIA" : "PRÉVIA INDISPONÍVEL"}</span>
+        <strong>{project.name}</strong>
+        <small>{previewState === "loading" ? "Preparando a visualização ao vivo." : "Use “Visitar projeto” para abrir a versão publicada."}</small>
+      </div>
+      {shouldRenderPreview && (
+        <iframe
+          src={addPortfolioPreviewParameter(project.previewUrl ?? project.url)}
+          title={`Prévia do projeto ${project.name}`}
+          tabIndex={-1}
+          loading="lazy"
+          onLoad={() => setPreviewState("ready")}
+          onError={() => setPreviewState("fallback")}
+        />
+      )}
+      <span className={labelClassName}>
+        {previewState === "ready" ? "LIVE / PREVIEW" : previewState === "loading" ? "CARREGANDO" : "LINK DIRETO"}
+      </span>
+    </div>
+  );
+}
+
 export default function PortfolioExperience() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("inicio");
@@ -177,9 +240,7 @@ export default function PortfolioExperience() {
   const latestProjectName = latestProject?.name
     ?? (latestLoading ? "Consultando Vercel" : "Aguardando projeto ativo");
   const isEmbeddedPreview = new URLSearchParams(window.location.search).has("portfolio-preview");
-  const latestProjectPreview = latestProject && !isEmbeddedPreview
-    ? `${latestProject.url}${latestProject.url.includes("?") ? "&" : "?"}portfolio-preview=1`
-    : null;
+  const forcePreviewFallback = new URLSearchParams(window.location.search).has("preview-fallback");
 
   useEffect(() => {
     if (window.location.hash) {
@@ -388,22 +449,7 @@ export default function PortfolioExperience() {
 
           <Reveal className="case-card" delay={0.12}>
             <div className="case-art" style={{ backgroundImage: `url(${caseStudySurface})` }} />
-            {latestProjectPreview && (
-              <div className="case-preview" aria-hidden="true">
-                <div className="case-preview__fallback">
-                  <span>PRÉVIA DO PROJETO</span>
-                  <strong>{latestProjectName}</strong>
-                  <small>Use “Visitar projeto” para abrir a versão publicada.</small>
-                </div>
-                <iframe
-                  src={latestProjectPreview}
-                  title="Prévia do projeto mais recente"
-                  tabIndex={-1}
-                  loading="eager"
-                />
-                <span className="case-preview__label">LIVE / PREVIEW</span>
-              </div>
-            )}
+            {latestProject && !isEmbeddedPreview && <ProjectLivePreview project={latestProject} variant="featured" forceFallback={forcePreviewFallback} />}
             <div className="case-number">LATEST / 01</div>
             <div className="case-content">
               <div>
@@ -449,6 +495,7 @@ export default function PortfolioExperience() {
                 <div className="projects-grid">
                   {projects.map((project, index) => (
                     <a className="project-entry" href={project.url} target="_blank" rel="noreferrer" key={project.id}>
+                      <ProjectLivePreview project={project} variant="catalog" forceFallback={forcePreviewFallback} />
                       <span>0{index + 1} / PRODUÇÃO</span>
                       <strong>{project.name}</strong>
                       <ArrowUpRight size={18} />
