@@ -3,6 +3,7 @@ import {
   getPortfolioCopy,
   isLocaleCode,
   localeChrome,
+  pageDescriptions,
   pageTitles,
   portraitStatusLabels,
   supportedLocales,
@@ -32,6 +33,7 @@ describe("localização do portfólio", () => {
       expect(localeChrome[code].livePreview.length).toBeGreaterThan(2);
       expect(portraitStatusLabels[code].length).toBeGreaterThan(2);
       expect(pageTitles[code]).toContain("Wesley Barroso");
+      expect(pageDescriptions[code].length).toBeGreaterThan(20);
     });
   });
 

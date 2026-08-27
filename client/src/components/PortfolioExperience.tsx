@@ -57,6 +57,7 @@ import {
   isLocaleCode,
   LOCALE_STORAGE_KEY,
   localeChrome,
+  pageDescriptions,
   pageTitles,
   portraitStatusLabels,
   supportedLocales,
@@ -362,6 +363,7 @@ export default function PortfolioExperience() {
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.2 });
   const copy = getPortfolioCopy(locale);
   const chrome = localeChrome[locale];
+  const exploreLabel = locale === "pt-BR" ? "EXPLORAR" : copy.explore;
   const latestProjectName = latestProject
     ? getProjectCatalogMeta(latestProject.name).title
     : (latestLoading ? copy.projects.loading : copy.projects.noProject);
@@ -378,6 +380,12 @@ export default function PortfolioExperience() {
   useEffect(() => {
     document.documentElement.lang = locale;
     document.title = pageTitles[locale];
+    const description = pageDescriptions[locale];
+    document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", pageTitles[locale]);
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", pageTitles[locale]);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", description);
   }, [locale]);
 
   useEffect(() => {
@@ -529,7 +537,7 @@ export default function PortfolioExperience() {
               <PortraitPortal statusLabel={portraitStatusLabels[locale]} />
             </Reveal>
           </div>
-          <a href="#visao" onClick={(event) => navigateToSection(event, "#visao")} className="scroll-cue" aria-label={copy.explore}><span>{copy.explore}</span><ArrowDown size={16} /></a>
+          <a href="#visao" onClick={(event) => navigateToSection(event, "#visao")} className="scroll-cue" aria-label={exploreLabel}><span>{exploreLabel}</span><ArrowDown size={16} /></a>
         </section>
 
         <section id="visao" className="section section--vision" data-code={copy.vision.index}>

@@ -26,6 +26,18 @@ export const pageTitles: Record<LocaleCode, string> = {
   no: "Wesley Barroso — Programvareutvikling",
 };
 
+export const pageDescriptions: Record<LocaleCode, string> = {
+  "pt-BR": "Portfólio de Wesley Barroso, engenheiro de software especializado em produtos digitais, APIs e automação.",
+  en: "Portfolio of Wesley Barroso, software engineer specializing in digital products, APIs, and automation.",
+  fr: "Portfolio de Wesley Barroso, ingénieur logiciel spécialisé dans les produits numériques, les API et l’automatisation.",
+  it: "Portfolio di Wesley Barroso, ingegnere del software specializzato in prodotti digitali, API e automazione.",
+  es: "Portafolio de Wesley Barroso, ingeniero de software especializado en productos digitales, API y automatización.",
+  de: "Portfolio von Wesley Barroso, Softwareentwickler mit Schwerpunkt auf digitalen Produkten, APIs und Automatisierung.",
+  ru: "Портфолио Wesley Barroso, инженера-программиста, специализирующегося на цифровых продуктах, API и автоматизации.",
+  da: "Portfolio for Wesley Barroso, softwareingeniør med speciale i digitale produkter, API'er og automatisering.",
+  no: "Portefølje for Wesley Barroso, programvareingeniør med spesialisering i digitale produkter, API-er og automatisering.",
+};
+
 export const portraitStatusLabels: Record<LocaleCode, string> = {
   "pt-BR": "DISPONÍVEL",
   en: "AVAILABLE",
