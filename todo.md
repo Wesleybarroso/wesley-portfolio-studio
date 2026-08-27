@@ -21,11 +21,14 @@
 - [x] Adicionar, ao lado de “Visitar projeto”, um botão para carregar todos os projetos ativos da conta Vercel.
 - [x] Exibir uma prévia visual real do projeto mais recente dentro do card dinâmico.
 - [x] Corrigir as camadas do card para que os botões de projeto recebam clique normalmente.
-- [ ] Adicionar carregamento e fallback visual para prévias de projetos que não possam ser incorporadas.
-- [ ] Implementar estados reais de carregamento, sucesso e indisponibilidade para a prévia incorporada.
-- [ ] Validar em produção a ativação manual do fallback e os controles do card.
-- [ ] Exibir uma miniatura real do deployment mais recente em cada projeto do catálogo ativo.
+- [x] Adicionar carregamento e fallback visual para prévias de projetos que não possam ser incorporadas.
+- [x] Implementar estados reais de carregamento, sucesso e indisponibilidade para a prévia incorporada.
+- [x] Validar em produção a ativação manual do fallback e os controles do card.
+- [x] Exibir uma miniatura real do deployment mais recente em cada projeto do catálogo ativo.
 - [ ] Sincronizar as miniaturas com o deployment de produção mais recente de cada projeto Vercel.
 - [ ] Validar em produção o carregamento, o fallback e os links de cada card do catálogo.
-- [ ] Priorizar o link público estável de cada projeto em vez da URL temporária de deployment protegida.
-- [ ] Validar a prévia da Altixdev usando o domínio público `altixdev-chi.vercel.app`.
+- [x] Priorizar o link público estável de cada projeto em vez da URL temporária de deployment protegida.
+- [x] Validar a prévia da Altixdev usando o domínio público `altixdev-chi.vercel.app`.
+- [ ] Ocultar a barra de rolagem visível mantendo a rolagem normal por mouse, toque e teclado.
+- [ ] Vincular cada URL de prévia ao alias associado ao deployment de produção mais recente.
+- [ ] Validar individualmente os estados de prévia, fallback e destino dos cinco cards publicados.

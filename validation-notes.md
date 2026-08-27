@@ -53,3 +53,11 @@ Ainda no deployment publicado, o botão `Ver meus projetos` abriu o catálogo co
 A implementação local passou a criar uma prévia independente para cada card do catálogo. Cada quadro tenta carregar o deployment ativo correspondente e mantém um fallback legível com link direto caso a incorporação seja bloqueada ou não finalize no prazo. A expansão e o carregamento assíncrono do catálogo seguem em validação visual antes da publicação.
 
 Na validação local, o controle do catálogo abriu a lista com cinco cards. Cada card recebeu uma área própria de prévia `LIVE / PREVIEW`, sem camada interativa sobre o link principal. O primeiro projeto já apresentou seu conteúdo ao vivo; os demais permaneceram inicialmente no estado de carregamento enquanto suas páginas eram requisitadas.
+
+Na publicação com seleção de aliases públicos, o endpoint passou a devolver `altixdev-chi.vercel.app` para a Altixdev e os domínios estáveis equivalentes para os demais projetos. O botão principal de visita já passou a apontar para o domínio público do portfólio, em vez da URL temporária e protegida do deployment. A barra nativa de rolagem também deixou de ser exibida, mantendo a página rolável.
+
+No teste visual em produção, a página carregou sem a faixa de rolagem lateral visível. O botão do catálogo percorre uma consulta assíncrona; a lista é exibida após a atualização de estado seguinte ao clique, preservando o conteúdo e a interação do restante da página.
+
+Na validação final do catálogo publicado, os cinco cards abriram com URLs públicas estáveis. A Altixdev carregou pela prévia de `altixdev-chi.vercel.app`, mostrando seu design real no próprio card; o portfólio e os demais projetos também exibiram seus conteúdos publicados. Os links dos cards passaram a direcionar para essas mesmas URLs públicas, sem depender dos domínios temporários de deployment que exigem autenticação.
+
+O fallback foi acionado manualmente na publicação pelo parâmetro de validação e apresentou uma composição legível de `LINK DIRETO`, título do projeto e orientação de visita. Nessa condição, o botão `Ver meus projetos` continuou exposto e recebeu o clique, comprovando que a camada de preview não bloqueia os controles.

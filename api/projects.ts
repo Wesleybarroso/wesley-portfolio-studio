@@ -1,4 +1,5 @@
 type Deployment = {
+  uid?: string;
   projectId?: string;
   name?: string;
   url?: string | null;
@@ -10,7 +11,6 @@ type Deployment = {
 
 type VercelAlias = {
   alias?: string;
-  projectId?: string | null;
   redirect?: string | null;
 };
 
@@ -19,6 +19,7 @@ type Project = {
   name: string;
   url: string;
   updatedAt: number;
+  deploymentId?: string;
   previewUrl?: string;
   preview?: {
     embeddable: boolean;
@@ -42,10 +43,10 @@ function buildDeploymentsUrl(teamScope: string) {
   return `https://api.vercel.com/v7/deployments?${parameters.toString()}`;
 }
 
-function buildAliasesUrl(teamScope: string) {
-  const parameters = new URLSearchParams({ limit: "100" });
+function buildDeploymentAliasesUrl(deploymentId: string, teamScope: string) {
+  const parameters = new URLSearchParams();
   parameters.set(teamScope.startsWith("team_") ? "teamId" : "slug", teamScope);
-  return `https://api.vercel.com/v4/aliases?${parameters.toString()}`;
+  return `https://api.vercel.com/v2/deployments/${encodeURIComponent(deploymentId)}/aliases?${parameters.toString()}`;
 }
 
 function normalizeProjects(deployments: Deployment[]): Project[] {
@@ -60,6 +61,7 @@ function normalizeProjects(deployments: Deployment[]): Project[] {
       name: deployment.name,
       url: `https://${deployment.url}`,
       updatedAt: deployment.ready ?? deployment.created ?? 0,
+      deploymentId: deployment.uid,
     };
 
     if (!newestByProject[project.id] || project.updatedAt > newestByProject[project.id].updatedAt) {
@@ -83,7 +85,7 @@ export function isFrameEmbeddingBlocked(xFrameOptions: string | null, contentSec
 
 export function getPreferredPreviewUrl(project: Project, aliases: VercelAlias[], teamScope: string) {
   const candidates = aliases
-    .filter((alias) => alias.projectId === project.id && alias.alias && !alias.redirect)
+    .filter((alias) => alias.alias && !alias.redirect)
     .map((alias) => alias.alias as string);
   const scopeIsSlug = !teamScope.startsWith("team_");
   const stablePublicVercelDomain = candidates
@@ -96,6 +98,19 @@ export function getPreferredPreviewUrl(project: Project, aliases: VercelAlias[],
   const selectedAlias = stablePublicVercelDomain ?? customDomain ?? stableVercelDomain ?? candidates[0];
 
   return selectedAlias ? `https://${selectedAlias}` : project.url;
+}
+
+async function getAliasesForDeployment(deploymentId: string | undefined, teamScope: string, headers: Record<string, string>) {
+  if (!deploymentId) return [];
+
+  try {
+    const response = await fetch(buildDeploymentAliasesUrl(deploymentId, teamScope), { headers });
+    if (!response.ok) return [];
+    const payload = (await response.json()) as { aliases?: VercelAlias[] };
+    return payload.aliases ?? [];
+  } catch {
+    return [];
+  }
 }
 
 async function getPreviewCapability(projectUrl: string) {
@@ -132,23 +147,18 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
 
   try {
     const headers = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
-    const [response, aliasesResponse] = await Promise.all([
-      fetch(buildDeploymentsUrl(teamScope), { headers }),
-      fetch(buildAliasesUrl(teamScope), { headers }).catch(() => null),
-    ]);
+    const response = await fetch(buildDeploymentsUrl(teamScope), { headers });
 
     if (!response.ok) {
       throw new Error(`A API Vercel respondeu com HTTP ${response.status}.`);
     }
 
     const payload = (await response.json()) as { deployments?: Deployment[] };
-    const aliasesPayload = aliasesResponse?.ok
-      ? (await aliasesResponse.json()) as { aliases?: VercelAlias[] }
-      : { aliases: [] };
     const activeProjects = normalizeProjects(payload.deployments ?? []);
     const projects = await Promise.all(
       activeProjects.map(async (project) => {
-        const previewUrl = getPreferredPreviewUrl(project, aliasesPayload.aliases ?? [], teamScope);
+        const aliases = await getAliasesForDeployment(project.deploymentId, teamScope, headers);
+        const previewUrl = getPreferredPreviewUrl(project, aliases, teamScope);
         return {
           ...project,
           previewUrl,
