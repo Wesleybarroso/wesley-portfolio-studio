@@ -83,3 +83,5 @@
 - [ ] Validar a correção em desktop, mobile e no endpoint publicado após novo deploy.
 - [x] Fazer o endpoint Express `/api/projects` do EasyPanel retornar aliases públicos em `previewUrl`, com estado de incorporação compatível com o frontend.
 - [x] Cobrir com teste o contrato do endpoint Express para impedir cards sem destino clicável no EasyPanel.
+- [x] Substituir o favicon antigo pelo símbolo atual WB no HTML e nos formatos suportados pelo navegador.
+- [ ] Validar o favicon no build publicado e orientar limpeza de cache após o redeploy.
