@@ -88,9 +88,14 @@ export function getPreferredPreviewUrl(project: Project, aliases: VercelAlias[],
     .filter((alias) => alias.alias && !alias.redirect)
     .map((alias) => alias.alias as string);
   const scopeIsSlug = !teamScope.startsWith("team_");
+  const normalizedProjectName = project.name.replace(/[^a-z0-9]/gi, "").toLowerCase();
   const stablePublicVercelDomain = candidates
     .filter((alias) => alias.endsWith(".vercel.app"))
-    .filter((alias) => alias === `${project.name}.vercel.app` || alias.startsWith(`${project.name}-`))
+    .filter((alias) => {
+      const normalizedAlias = alias.toLowerCase();
+      return normalizedAlias === `${normalizedProjectName}.vercel.app`
+        || normalizedAlias.startsWith(`${normalizedProjectName}-`);
+    })
     .filter((alias) => !scopeIsSlug || !alias.includes(teamScope))
     .sort((first, second) => first.length - second.length)[0];
   const customDomain = candidates.find((alias) => !alias.endsWith(".vercel.app"));

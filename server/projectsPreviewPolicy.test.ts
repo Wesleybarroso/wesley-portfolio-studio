@@ -31,6 +31,20 @@ describe("getPreferredPreviewUrl", () => {
     ], "wesleys-projects-c7635016")).toBe("https://altixdev-chi.vercel.app");
   });
 
+  it("usa o alias público direto quando o nome técnico do projeto contém sublinhado", () => {
+    const projectWithUnderscore = {
+      ...project,
+      name: "clinica_monique",
+      url: "https://clinicamonique-deployment-hash.vercel.app",
+    };
+
+    expect(getPreferredPreviewUrl(projectWithUnderscore, [
+      { alias: "clinicamonique-wesleys-projects-c7635016.vercel.app" },
+      { alias: "clinicamonique-git-main-wesleys-projects-c7635016.vercel.app" },
+      { alias: "clinicamonique.vercel.app" },
+    ], "team_a5LWYS48dlRSAUqy60H2Vg4O")).toBe("https://clinicamonique.vercel.app");
+  });
+
   it("mantém a URL do deployment quando não há alias utilizável", () => {
     expect(getPreferredPreviewUrl(project, [
       { projectId: "project-1", alias: "old.example.com", redirect: "new.example.com" },

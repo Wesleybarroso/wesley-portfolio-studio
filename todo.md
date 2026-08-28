@@ -64,3 +64,8 @@
 - [x] Localizar os metadados de documento além do título, incluindo description e Open Graph quando presentes, e validar o resultado publicado.
 - [x] Validar no código e no deployment do Verde Ação os efeitos de parallax e profundidade durante a rolagem, incluindo a preferência por reduzir movimento.
 - [x] Confirmar em desktop e mobile que os efeitos de movimento do Verde Ação atualizam posições no scroll sem criar transbordamento visual.
+- [x] Verificar, card por card, as prévias do catálogo publicado em mobile e desktop após o relato de áreas visuais vazias.
+- [x] Confirmar que os cards sem incorporação exibem fallback legível com link público, enquanto os demais carregam sua prévia ao vivo.
+- [x] Validar no catálogo publicado em viewport mobile os seis cards atuais, registrando o estado, destino público e conteúdo visível de cada card.
+- [x] Substituir qualquer URL temporária de deployment por um alias público estável em todos os cards e no destaque do catálogo.
+- [ ] Validar em produção que nenhum link de card contém o sufixo temporário de deployment da equipe Vercel.
