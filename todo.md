@@ -70,3 +70,9 @@
 - [x] Substituir qualquer URL temporária de deployment por um alias público estável em todos os cards e no destaque do catálogo.
 - [x] Validar em produção que nenhum link de card contém o sufixo temporário de deployment da equipe Vercel.
 - [x] Impedir que a interface use a URL temporária de deployment como fallback quando não houver alias público disponível.
+- [x] Corrigir o import estático de Vite no entrypoint para que produção não dependa de `vite` após o prune de dependências.
+- [x] Validar o runtime de produção com dependências somente de produção e confirmar novo deployment Vercel sem `ERR_MODULE_NOT_FOUND`.
+- [x] Habilitar code splitting ESM no build do servidor para manter o módulo Vite fora do entrypoint de produção.
+- [ ] Publicar a correção do runtime no repositório conectado ao Vercel.
+- [ ] Validar no deployment Vercel atualizado que o servidor inicia sem `ERR_MODULE_NOT_FOUND`.
+- [ ] Registrar em `validation-notes.md` a confirmação do runtime Vercel pós-correção.
