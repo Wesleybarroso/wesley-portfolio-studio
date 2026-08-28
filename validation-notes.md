@@ -105,3 +105,5 @@ O consentimento de cookies mostrou apenas o aviso no carregamento, abriu prefer�
 ## Catálogo atual — 28 de agosto de 2026
 
 A conferência desktop e mobile identificou seis cards no catálogo. **Wesley Portfolio Studio**, **Verde Ação**, **Portfólio Wesley**, **Altixdev** e **altixdev-funnel** chegaram ao estado `ready`, com prévia incorporada de 222 px no mobile e link público estável. O card **clinica_monique** apareceu normalmente no catálogo, mas não permite incorporação por sua própria política de segurança; por isso, mostrou o fallback legível `PRÉVIA INDISPONÍVEL / LINK DIRETO` com destino público funcional. A grade mobile não teve transbordamento horizontal nem barra nativa visível.
+
+Após o envio do commit `6729781`, a primeira consulta ao endpoint público ainda respondeu com a versão anterior para `clinica_monique`, usando o alias associado à equipe. A confirmação definitiva foi mantida pendente até que o novo deployment passe a servir o alias público direto `clinicamonique.vercel.app`.

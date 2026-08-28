@@ -45,9 +45,9 @@ describe("getPreferredPreviewUrl", () => {
     ], "team_a5LWYS48dlRSAUqy60H2Vg4O")).toBe("https://clinicamonique.vercel.app");
   });
 
-  it("mantém a URL do deployment quando não há alias utilizável", () => {
+  it("não expõe a URL temporária do deployment quando não há alias utilizável", () => {
     expect(getPreferredPreviewUrl(project, [
       { projectId: "project-1", alias: "old.example.com", redirect: "new.example.com" },
-    ], "wesleys-projects-c7635016")).toBe(project.url);
+    ], "wesleys-projects-c7635016")).toBeUndefined();
   });
 });

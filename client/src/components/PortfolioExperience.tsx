@@ -89,7 +89,6 @@ type RevealProps = {
 type LiveProject = {
   id: string;
   name: string;
-  url: string;
   updatedAt: number;
   previewUrl?: string;
   preview?: {
@@ -305,7 +304,8 @@ function ProjectLivePreview({
   const className = variant === "featured" ? "case-preview" : "project-live-preview";
   const fallbackClassName = variant === "featured" ? "case-preview__fallback" : "project-live-preview__fallback";
   const labelClassName = variant === "featured" ? "case-preview__label" : "project-live-preview__label";
-  const previewIsAllowed = project.preview?.embeddable !== false && !forceFallback;
+  const previewUrl = project.previewUrl;
+  const previewIsAllowed = Boolean(previewUrl) && project.preview?.embeddable !== false && !forceFallback;
   const shouldRenderPreview = previewIsAllowed && previewState !== "fallback";
 
   useEffect(() => {
@@ -320,7 +320,7 @@ function ProjectLivePreview({
     }, 7000);
 
     return () => window.clearTimeout(fallbackTimeout);
-  }, [project.previewUrl, project.url, previewIsAllowed]);
+  }, [previewUrl, previewIsAllowed]);
 
   return (
     <div className={className} data-state={previewState} aria-hidden="true">
@@ -329,9 +329,9 @@ function ProjectLivePreview({
         <strong>{getProjectCatalogMeta(project.name).title}</strong>
         <small>{previewState === "loading" ? copy.projects.previewLoadingDetail : copy.projects.previewUnavailableDetail}</small>
       </div>
-      {shouldRenderPreview && (
+      {shouldRenderPreview && previewUrl && (
         <iframe
-          src={addPortfolioPreviewParameter(project.previewUrl ?? project.url)}
+          src={addPortfolioPreviewParameter(previewUrl)}
           title={`Prévia do projeto ${project.name}`}
           tabIndex={-1}
           loading={getPreviewLoadingStrategy(variant)}
@@ -607,8 +607,8 @@ export default function PortfolioExperience() {
                   <li>{copy.projects.tags[0]}</li><li>{copy.projects.tags[1]}</li>{latestProject?.updatedAt ? <li>{copy.projects.tags[2]}</li> : null}
                 </ul>
                 <div className="case-actions">
-                  {latestProject ? (
-                    <a href={latestProject.previewUrl ?? latestProject.url} target="_blank" rel="noreferrer" className="case-link">{copy.projects.visit} <ArrowUpRight size={18} /></a>
+                  {latestProject?.previewUrl ? (
+                    <a href={latestProject.previewUrl} target="_blank" rel="noreferrer" className="case-link">{copy.projects.visit} <ArrowUpRight size={18} /></a>
                   ) : (
                     <span className="case-link case-link--disabled">{copy.projects.noProject} <ArrowUpRight size={18} /></span>
                   )}
@@ -640,8 +640,7 @@ export default function PortfolioExperience() {
                 <div className="projects-grid">
                   {projects.map((project) => {
                     const projectMeta = getProjectCatalogMeta(project.name);
-                    return (
-                      <a className="project-entry" href={project.previewUrl ?? project.url} target="_blank" rel="noreferrer" key={project.id}>
+                    const cardContent = <>
                         <div className="project-entry__visual">
                           <ProjectLivePreview project={project} variant="catalog" copy={copy} livePreviewLabel={chrome.livePreview} forceFallback={forcePreviewFallback} />
                         </div>
@@ -651,7 +650,12 @@ export default function PortfolioExperience() {
                         </div>
                         <p className="project-entry__description">{getLocalizedProjectDescription(project.name, copy)}</p>
                         <ArrowUpRight size={18} aria-hidden="true" />
-                      </a>
+                      </>;
+
+                    return project.previewUrl ? (
+                      <a className="project-entry" href={project.previewUrl} target="_blank" rel="noreferrer" key={project.id}>{cardContent}</a>
+                    ) : (
+                      <article className="project-entry" key={project.id} aria-disabled="true">{cardContent}</article>
                     );
                   })}
                 </div>

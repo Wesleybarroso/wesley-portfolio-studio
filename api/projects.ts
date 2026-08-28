@@ -102,7 +102,7 @@ export function getPreferredPreviewUrl(project: Project, aliases: VercelAlias[],
   const stableVercelDomain = candidates.find((alias) => alias.startsWith(`${project.name}.`));
   const selectedAlias = stablePublicVercelDomain ?? customDomain ?? stableVercelDomain ?? candidates[0];
 
-  return selectedAlias ? `https://${selectedAlias}` : project.url;
+  return selectedAlias ? `https://${selectedAlias}` : undefined;
 }
 
 async function getAliasesForDeployment(deploymentId: string | undefined, teamScope: string, headers: Record<string, string>) {
@@ -118,7 +118,9 @@ async function getAliasesForDeployment(deploymentId: string | undefined, teamSco
   }
 }
 
-async function getPreviewCapability(projectUrl: string) {
+async function getPreviewCapability(projectUrl: string | undefined) {
+  if (!projectUrl) return { embeddable: false };
+
   try {
     const response = await fetch(projectUrl, {
       method: "HEAD",
@@ -164,8 +166,9 @@ export default async function handler(req: RequestLike, res: ResponseLike) {
       activeProjects.map(async (project) => {
         const aliases = await getAliasesForDeployment(project.deploymentId, teamScope, headers);
         const previewUrl = getPreferredPreviewUrl(project, aliases, teamScope);
+        const { url: _deploymentUrl, ...publicProject } = project;
         return {
-          ...project,
+          ...publicProject,
           previewUrl,
           preview: await getPreviewCapability(previewUrl),
         };

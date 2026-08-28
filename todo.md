@@ -69,3 +69,4 @@
 - [x] Validar no catálogo publicado em viewport mobile os seis cards atuais, registrando o estado, destino público e conteúdo visível de cada card.
 - [x] Substituir qualquer URL temporária de deployment por um alias público estável em todos os cards e no destaque do catálogo.
 - [ ] Validar em produção que nenhum link de card contém o sufixo temporário de deployment da equipe Vercel.
+- [x] Impedir que a interface use a URL temporária de deployment como fallback quando não houver alias público disponível.
