@@ -113,3 +113,6 @@ Após o deployment do commit `77c63f1`, a resposta pública retornou seis `previ
 ## Correção do runtime Vercel — 28 de agosto de 2026
 
 O erro `ERR_MODULE_NOT_FOUND` foi corrigido no commit `c514e4c`. O entrypoint passou a carregar `vite.ts` somente em desenvolvimento, o servidor estático foi isolado em `server/_core/static.ts` e o build ESM passou a usar code splitting. A simulação local com instalação somente de produção iniciou o servidor sem o pacote `vite`. Após o deployment Vercel, `/api/projects?runtime=c514e4c` respondeu HTTP 200 e não retornou `ERR_MODULE_NOT_FOUND` nem `Cannot find package`; o deployment ativo foi identificado como `dpl_JBBsk1bonmM3t2pSRByZvkd98Qph`.
+
+
+A checagem posterior ao log de build enviado pelo usuário consultou `https://wesley-portfolio-studio.vercel.app/api/projects?runtime-log-check=1` e recebeu HTTP 200, sem `ERR_MODULE_NOT_FOUND`, `Cannot find package` ou `Application Error`. A resposta listou seis projetos ativos, com sete ocorrências de `name` por incluir o projeto mais recente em `latest` e novamente em `projects`.

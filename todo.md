@@ -76,3 +76,5 @@
 - [x] Publicar a correção do runtime no repositório conectado ao Vercel.
 - [x] Validar no deployment Vercel atualizado que o servidor inicia sem `ERR_MODULE_NOT_FOUND`.
 - [x] Registrar em `validation-notes.md` a confirmação do runtime Vercel pós-correção.
+- [x] Diagnosticar o runtime final após `pnpm prune --prod` e os avisos de scripts ignorados no deployment Docker.
+- [x] Confirmar que o log não apresenta falha comprovada após o prune e que o endpoint Vercel permanece funcional.
