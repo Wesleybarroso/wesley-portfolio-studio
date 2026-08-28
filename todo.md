@@ -78,3 +78,8 @@
 - [x] Registrar em `validation-notes.md` a confirmação do runtime Vercel pós-correção.
 - [x] Diagnosticar o runtime final após `pnpm prune --prod` e os avisos de scripts ignorados no deployment Docker.
 - [x] Confirmar que o log não apresenta falha comprovada após o prune e que o endpoint Vercel permanece funcional.
+- [x] Corrigir cards do catálogo que aparecem sem imagem de prévia no deployment EasyPanel.
+- [x] Restaurar clique confiável nos botões e links dos cards sem depender da interação dentro do iframe.
+- [ ] Validar a correção em desktop, mobile e no endpoint publicado após novo deploy.
+- [x] Fazer o endpoint Express `/api/projects` do EasyPanel retornar aliases públicos em `previewUrl`, com estado de incorporação compatível com o frontend.
+- [x] Cobrir com teste o contrato do endpoint Express para impedir cards sem destino clicável no EasyPanel.

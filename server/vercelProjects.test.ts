@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createActiveProjects, createDeploymentsUrl } from "./vercelProjects";
+import { createActiveProjects, createDeploymentsUrl, createPublicProject } from "./vercelProjects";
 
 describe("Vercel projects feed", () => {
   it("uses a team slug or team ID without exposing credentials", () => {
@@ -24,5 +24,23 @@ describe("Vercel projects feed", () => {
 
   it("returns an empty catalog when there are no ready production deployments", () => {
     expect(createActiveProjects([{ state: "BUILDING", target: "production" }])).toEqual([]);
+  });
+
+  it("exposes a stable public alias instead of the deployment URL", () => {
+    const project = createPublicProject(
+      {
+        id: "clinic",
+        name: "clinica_monique",
+        url: "clinic-deployment.vercel.app",
+        updatedAt: 100,
+      },
+      [{ alias: "clinicamonique.vercel.app", redirect: null }],
+      true,
+      "team_123",
+    );
+
+    expect(project.previewUrl).toBe("https://clinicamonique.vercel.app");
+    expect(project.preview).toEqual({ embeddable: true });
+    expect(project).not.toHaveProperty("url");
   });
 });

@@ -649,13 +649,19 @@ export default function PortfolioExperience() {
                           <ProjectTechnologyIcons technologies={projectMeta.technologies} />
                         </div>
                         <p className="project-entry__description">{getLocalizedProjectDescription(project.name, copy)}</p>
-                        <ArrowUpRight size={18} aria-hidden="true" />
+                        {project.previewUrl ? (
+                          <a className="project-entry__visit" href={project.previewUrl} target="_blank" rel="noreferrer">
+                            {copy.projects.visit} <ArrowUpRight size={16} aria-hidden="true" />
+                          </a>
+                        ) : (
+                          <span className="project-entry__visit project-entry__visit--disabled">{copy.projects.previewUnavailable}</span>
+                        )}
                       </>;
 
-                    return project.previewUrl ? (
-                      <a className="project-entry" href={project.previewUrl} target="_blank" rel="noreferrer" key={project.id}>{cardContent}</a>
-                    ) : (
-                      <article className="project-entry" key={project.id} aria-disabled="true">{cardContent}</article>
+                    return (
+                      <article className="project-entry" key={project.id} aria-disabled={!project.previewUrl}>
+                        {cardContent}
+                      </article>
                     );
                   })}
                 </div>
