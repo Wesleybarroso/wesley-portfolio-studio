@@ -73,6 +73,6 @@
 - [x] Corrigir o import estático de Vite no entrypoint para que produção não dependa de `vite` após o prune de dependências.
 - [x] Validar o runtime de produção com dependências somente de produção e confirmar novo deployment Vercel sem `ERR_MODULE_NOT_FOUND`.
 - [x] Habilitar code splitting ESM no build do servidor para manter o módulo Vite fora do entrypoint de produção.
-- [ ] Publicar a correção do runtime no repositório conectado ao Vercel.
-- [ ] Validar no deployment Vercel atualizado que o servidor inicia sem `ERR_MODULE_NOT_FOUND`.
-- [ ] Registrar em `validation-notes.md` a confirmação do runtime Vercel pós-correção.
+- [x] Publicar a correção do runtime no repositório conectado ao Vercel.
+- [x] Validar no deployment Vercel atualizado que o servidor inicia sem `ERR_MODULE_NOT_FOUND`.
+- [x] Registrar em `validation-notes.md` a confirmação do runtime Vercel pós-correção.
